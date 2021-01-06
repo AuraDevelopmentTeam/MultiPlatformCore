@@ -55,7 +55,7 @@ So you want to ad this library to your own plugin then you can easily add it to 
 
     <dependencies>
         <dependency>
-            <groupId>team.aura-dev.lib.multiplatformcore</groupId>
+            <groupId>team.aura_dev.lib.multiplatformcore</groupId>
             <artifactId>MultiPlatformCore</artifactId>
             <version>{version}</version>
             <scope>shadow</scope>
@@ -73,7 +73,7 @@ So you want to ad this library to your own plugin then you can easily add it to 
     }
 
     dependencies {
-        shadow "team.aura-dev.lib.multiplatformcore:MultiPlatformCore:{version}"
+        shadow "team.aura_dev.lib.multiplatformcore:MultiPlatformCore:{version}"
     }
 
 ## Setting up a Workspace/Compiling from Source

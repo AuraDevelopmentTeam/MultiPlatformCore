@@ -1,9 +1,14 @@
 apply from: "GradleCommon/common.gradle"
 
 repositories {
-    // Additional repositories
+    maven {
+        name "mikroskeem"
+        url "https://repo.wut.ee/repository/mikroskeem-repo"
+    }
 }
 
 dependencies {
-    // Additional dependencies
+    shadowRelocate("eu.mikroskeem:picomaven:${picoMaven_version}") {
+        exclude group: "org.slf4j"
+    }
 }
