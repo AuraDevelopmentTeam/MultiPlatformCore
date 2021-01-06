@@ -1,4 +1,4 @@
-package team.aura_dev.lib.multiplatformcore.dependency;
+package team.aura_dev.lib.multiplatformcore.download;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import eu.mikroskeem.picomaven.DownloadResult;
@@ -16,29 +16,29 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import lombok.experimental.UtilityClass;
-import team.aura_dev.auraban.platform.common.AuraBanBaseBootstrap;
+import lombok.RequiredArgsConstructor;
+import team.aura_dev.lib.multiplatformcore.DependencyClassLoader;
+import team.aura_dev.lib.multiplatformcore.dependency.RuntimeDependency;
 
 // TODO: Logging!
-@UtilityClass
+@RequiredArgsConstructor
 public class DependencyDownloader {
-  private static final DependencyClassLoader classLoader =
-      AuraBanBaseBootstrap.getDependencyClassLoader();
+  private final DependencyClassLoader classLoader;
+  private final Path libsDir;
 
   @SuppressFBWarnings(
       value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE",
       justification = "SpotBugs is incorrect in this case")
-  public static void downloadAndInjectInClasspath(
-      Collection<RuntimeDependency> dependencies, Path libPath) {
+  public void downloadAndInjectInClasspath(Collection<RuntimeDependency> dependencies) {
     try {
-      Files.createDirectories(libPath);
+      Files.createDirectories(libsDir);
     } catch (IOException e) {
       throw new IllegalStateException("Can't create the library dirs", e);
     }
 
     PicoMaven.Builder picoMavenBase =
         new PicoMaven.Builder()
-            .withDownloadPath(libPath)
+            .withDownloadPath(libsDir)
             .withRepositoryURLs(
                 Stream.concat(
                         Stream.of(RuntimeDependency.Maven.MAVEN_CENTRAL),
@@ -62,18 +62,18 @@ public class DependencyDownloader {
               .downloadAllArtifacts()
               .values()
               .parallelStream()
-              .flatMap(DependencyDownloader::processDownload)
-              .peek(DependencyDownloader::checkDownload)
+              .flatMap(this::processDownload)
+              .peek(this::checkDownload)
               .collect(Collectors.toList());
 
       downloads.stream()
           .map(DownloadResult::getAllDownloadedFiles)
           .flatMap(List::stream)
-          .forEach(DependencyDownloader::injectInClasspath);
+          .forEach(this::injectInClasspath);
     }
   }
 
-  private static Stream<DownloadResult> processDownload(Future<DownloadResult> future) {
+  private Stream<DownloadResult> processDownload(Future<DownloadResult> future) {
     try {
       final DownloadResult result = future.get();
 
@@ -84,19 +84,21 @@ public class DependencyDownloader {
       return allDownloads.stream();
     } catch (InterruptedException | ExecutionException e) {
       // Rethrow because we rely on this working
-      throw new DependencyDownloadException("Error while trying to download a dependency", e);
+      throw new DependencyDownloadException(
+          "Error while trying to download a dependency", libsDir, e);
     }
   }
 
-  private static void checkDownload(DownloadResult result) {
+  private void checkDownload(DownloadResult result) {
     if (!result.isSuccess()) {
       throw new DependencyDownloadException(
           "Downloading the dependency " + getDependencyName(result.getDependency()) + " failed",
+          libsDir,
           result.getDownloadException());
     }
   }
 
-  private static void injectInClasspath(Path jarFile) {
+  private void injectInClasspath(Path jarFile) {
     try {
       URL jarFileUrl = new URL("jar", "", "file:" + jarFile.toAbsolutePath().toString() + "!/");
 
@@ -104,7 +106,7 @@ public class DependencyDownloader {
     } catch (MalformedURLException | IllegalArgumentException e) {
       // Rethrow because we rely on this working
       throw new DependencyDownloadException(
-          "Error while trying to inject a dependency in the classloader", e);
+          "Error while trying to inject a dependency in the classloader", libsDir, e);
     }
   }
 

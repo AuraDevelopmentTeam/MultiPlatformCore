@@ -1,4 +1,4 @@
-package team.aura_dev.lib.multiplatformcore.dependency;
+package team.aura_dev.lib.multiplatformcore;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

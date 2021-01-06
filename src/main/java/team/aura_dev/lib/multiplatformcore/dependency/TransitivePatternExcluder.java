@@ -1,7 +1,7 @@
 package team.aura_dev.lib.multiplatformcore.dependency;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import eu.mikroskeem.picomaven.artifact.TransitiveDependencyProcessor;
+import javax.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -16,7 +16,7 @@ public class TransitivePatternExcluder implements TransitiveDependencyProcessor 
   }
 
   @Override
-  public void accept(@NonNull DownloadableTransitiveDependency dependency) {
+  public void accept(@Nonnull DownloadableTransitiveDependency dependency) {
     if ((groupId != null) && !groupId.equals(dependency.getGroupId())) return;
     if ((artifactId != null) && !artifactId.equals(dependency.getArtifactId())) return;
 
