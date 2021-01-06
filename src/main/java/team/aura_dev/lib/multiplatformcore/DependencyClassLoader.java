@@ -22,13 +22,50 @@ public class DependencyClassLoader extends URLClassLoader {
   private static final Method findLoadedClassMethod = getFindLoadedClassMethod();
 
   protected final ClassLoader parent;
+  protected final String packageName;
+  protected final String apiPackageName;
+
+  /**
+   * Constructor that automatically detects the parent {@link ClassLoader} by using its own {@link
+   * ClassLoader}.<br>
+   * Generates the {@code apiPackageName} by appending {@code ".api"}
+   *
+   * @param packageName The package base name all the plugin's classes are located in.<br>
+   *     This is important because we must never load these classes ourselves if the parent {@link
+   *     ClassLoader} has them loaded.
+   * @see DependencyClassLoader(String, String)
+   */
+  public DependencyClassLoader(String packageName) {
+    this(packageName, packageName + ".api");
+  }
 
   /**
    * Constructor that automatically detects the parent {@link ClassLoader} by using its own {@link
    * ClassLoader}.
+   *
+   * @param packageName The package base name all the plugin's classes are located in.<br>
+   *     This is important because we must never load these classes ourselves if the parent {@link
+   *     ClassLoader} has them loaded.
+   * @param apiPackageName The package base name all the plugin's API classes are located in.<br>
+   *     This is important because we must never load these classes ourselves no matter what.
    */
-  public DependencyClassLoader() {
-    this(DependencyClassLoader.class.getClassLoader());
+  public DependencyClassLoader(String packageName, String apiPackageName) {
+    this(DependencyClassLoader.class.getClassLoader(), packageName, apiPackageName);
+  }
+
+  /**
+   * Constructor that allows you to specify the parent {@link ClassLoader} you want to use.<br>
+   * Generates the {@code apiPackageName} by appending {@code ".api"}
+   *
+   * @param parent parent {@link ClassLoader} to be used if a {@link Class} cannot be found in the
+   *     own {@link URL}s.
+   * @param packageName The package base name all the plugin's classes are located in.<br>
+   *     This is important because we must never load these classes ourselves if the parent {@link
+   *     ClassLoader} has them loaded.
+   * @see DependencyClassLoader(ClassLoader, String, String)
+   */
+  public DependencyClassLoader(ClassLoader parent, String packageName) {
+    this(parent, packageName, packageName + ".api");
   }
 
   /**
@@ -36,12 +73,19 @@ public class DependencyClassLoader extends URLClassLoader {
    *
    * @param parent parent {@link ClassLoader} to be used if a {@link Class} cannot be found in the
    *     own {@link URL}s.
+   * @param packageName The package base name all the plugin's classes are located in.<br>
+   *     This is important because we must never load these classes ourselves if the parent {@link
+   *     ClassLoader} has them loaded.
+   * @param apiPackageName The package base name all the plugin's API classes are located in.<br>
+   *     This is important because we must never load these classes ourselves no matter what.
    */
-  public DependencyClassLoader(ClassLoader parent) {
-    // Start of with adding its own jar URL
+  public DependencyClassLoader(ClassLoader parent, String packageName, String apiPackageName) {
+    // Start off with adding its own jar URL
     super(getOwnJarURL(), parent);
 
     this.parent = parent;
+    this.packageName = packageName;
+    this.apiPackageName = apiPackageName;
   }
 
   @Override
@@ -56,7 +100,7 @@ public class DependencyClassLoader extends URLClassLoader {
 
     // Reuse existing instances of own Classes if loaded in parent ClassLoader
     // (Like the bootstrap Classes or this Class(Loader))
-    if ((loadedClass == null) && name.startsWith("@group@")) {
+    if ((loadedClass == null) && name.startsWith(packageName)) {
       try {
         loadedClass = (Class<?>) findLoadedClassMethod.invoke(parent, name);
       } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
@@ -65,7 +109,7 @@ public class DependencyClassLoader extends URLClassLoader {
     }
 
     // Never load API classes with this ClassLoader
-    if ((loadedClass == null) && !name.startsWith("@group@.api")) {
+    if ((loadedClass == null) && !name.startsWith(apiPackageName)) {
       try {
         // Find the Class from given jar URLs
         loadedClass = findClass(name);
@@ -76,7 +120,7 @@ public class DependencyClassLoader extends URLClassLoader {
 
     // The Class hasn't been found yet
     // Let's try finding it in our parent ClassLoader
-    // This'll throw ClassNotFoundException in failure
+    // This will throw ClassNotFoundException in failure
     if (loadedClass == null) {
       loadedClass = super.loadClass(name, resolve);
     }
