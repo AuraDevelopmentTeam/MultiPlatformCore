@@ -1,6 +1,5 @@
 package team.aura_dev.lib.multiplatformcore.download;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import eu.mikroskeem.picomaven.DownloadResult;
 import eu.mikroskeem.picomaven.PicoMaven;
 import eu.mikroskeem.picomaven.artifact.Dependency;
@@ -26,9 +25,6 @@ public class DependencyDownloader {
   private final DependencyClassLoader classLoader;
   private final Path libsDir;
 
-  @SuppressFBWarnings(
-      value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE",
-      justification = "SpotBugs is incorrect in this case")
   public void downloadAndInjectInClasspath(Collection<RuntimeDependency> dependencies) {
     try {
       Files.createDirectories(libsDir);
