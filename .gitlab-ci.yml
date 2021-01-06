@@ -1,0 +1,178 @@
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+  CACHE_KEY: "$CI_COMMIT_REF_NAME $CI_COMMIT_SHA"
+  ORIG_ARTIFACTS1: "$CI_PROJECT_DIR/**/build/libs/*.jar*"
+  ORIG_ARTIFACTS2: "$CI_PROJECT_DIR/**/build/distributions/*.zip*"
+  ARTIFACTS1: "$CI_PROJECT_DIR/*.jar*"
+  ARTIFACTS2: "$CI_PROJECT_DIR/*.zip*"
+  TEST_REPORTS: "$CI_PROJECT_DIR/*-TestReport.zip"
+  TEST_DATA: "$CI_PROJECT_DIR/**/build/test-results/*/TEST-*.xml"
+  JACOCO_DATA: "$CI_PROJECT_DIR/**/build/jacoco/*"
+  TRANSLATION_REPORTS: "$CI_PROJECT_DIR/**/*.lang.txt"
+  COVERAGE_REPORTS: "$CI_PROJECT_DIR/*-CoverageReport.zip"
+  SPOTBUGS_REPORTS: "$CI_PROJECT_DIR/*-SpotbugsReport.zip"
+  JAVADOCS: "$CI_PROJECT_DIR/*-javadoc.jar"
+  GRADLE_OPTS: >
+    -Dorg.gradle.project.branchName="$CI_COMMIT_REF_NAME"
+
+cache:
+  policy: pull
+  key: "$CACHE_KEY"
+  untracked: true
+
+before_script:
+  - shopt -s globstar
+  - shopt -s nullglob
+
+stages:
+- build
+- test
+- report
+- deploy
+
+build:
+  stage: build
+  cache:
+    policy: push
+    key: "$CACHE_KEY"
+    untracked: true
+  script:
+  - ./gradlew --console=plain assemble compileTest
+  - cp $ORIG_ARTIFACTS1 $ORIG_ARTIFACTS2 .
+  retry: 2
+  when: on_success
+  artifacts:
+    paths:
+    - $ARTIFACTS1
+    - $ARTIFACTS2
+
+test:
+  stage: test
+  cache:
+    policy: pull-push
+    key: "$CACHE_KEY"
+    untracked: true
+  needs:
+    - job: build
+      artifacts: false
+  script:
+  - ./gradlew --continue --console=plain test
+  retry: 2
+  when: on_success
+  artifacts:
+    when: always
+    paths:
+    - $TEST_REPORTS
+    - $JACOCO_DATA
+    reports:
+      junit:
+      - $TEST_DATA
+
+checkFormatting:
+  stage: test
+  needs: []
+  script:
+  - ./gradlew --continue --console=plain spotlessCheck
+  allow_failure: true
+  when: on_success
+
+checkTranslations:
+  stage: test
+  needs: []
+  script:
+  - ./gradlew --continue --console=plain checkTranslations
+  allow_failure: true
+  when: on_success
+  artifacts:
+    when: on_failure
+    paths:
+    - $TRANSLATION_REPORTS
+
+coverage:
+  stage: report
+  needs:
+    - job: test
+      artifacts: true
+  script:
+  - ./gradlew --continue --console=plain -x test coverage
+  coverage: "/Covered (\\d{1,3}\\.\\d{2}%) of instructions for all projects\\./"
+  allow_failure: true
+  when: on_success
+  artifacts:
+    when: always
+    paths:
+    - $COVERAGE_REPORTS
+
+spotbugs:
+  stage: report
+  needs:
+    - job: build
+      artifacts: false
+  script:
+  - ./gradlew --continue --console=plain spotbugs
+  allow_failure: true
+  when: on_success
+  artifacts:
+    when: always
+    paths:
+    - $SPOTBUGS_REPORTS
+
+deploySnapshot:
+  stage: deploy
+  needs:
+    - job: build
+      artifacts: true
+  script:
+  - ./gradlew --console=plain uploadArchives $(echo "$CI_COMMIT_MESSAGE" | grep -qF "[release]" && echo releaseSnapshot)
+  retry: 2
+  when: always
+  except:
+  - tags
+
+deploy:
+  stage: deploy
+  needs:
+    - job: build
+      artifacts: true
+  script:
+  - ./gradlew --console=plain release
+  retry: 2
+  when: always
+  only:
+  - tags
+  
+sendCoverage:
+  stage: deploy
+  needs:
+    - job: coverage
+      artifacts: true
+  script:
+  - ./gradlew --console=plain sendCoverageToCodacy
+  retry: 2
+  when: on_success
+
+pages:
+  stage: deploy
+  needs:
+    - job: build
+      artifacts: true
+    - job: test
+      artifacts: true
+    - job: checkTranslations
+      artifacts: true
+    - job: coverage
+      artifacts: true
+    - job: spotbugs
+      artifacts: true
+  script:
+  - for file in $JAVADOCS; do dir="public/javadoc/$(basename "$file" | cut -d. -f1 | rev | cut -d- -f1 --complement | rev)"; mkdir -p "$dir"; unzip "$file" -d "$dir"; done
+  - for file in $TEST_REPORTS; do dir="public/test/$(basename "$file" | rev | cut -d- -f1 --complement | rev)"; mkdir -p "$dir"; unzip "$file" -d "$dir"; done
+  - for file in $TRANSLATION_REPORTS; do dir="public/checkTranslations/$(basename "$(dirname "$file")")"; mkdir -p "$dir"; cp "$file" "$dir"; done
+  - for file in $COVERAGE_REPORTS; do dir="public/coverage/$(basename "$file" | rev | cut -d- -f1 --complement | rev)"; mkdir -p "$dir"; unzip "$file" -d "$dir"; done
+  - for file in $SPOTBUGS_REPORTS; do dir="public/spotbugs/$(basename "$file" | rev | cut -d- -f1 --complement | rev)"; mkdir -p "$dir"; unzip "$file" -d "$dir"; done
+  - GradleCommon/scripts/make_directory_listings.sh
+  - find public -type f -regex '.*\.\(html?\|te?xt\|js\|css\|jpe?g\|png\|gif\)$' -exec gzip -fk9 {} \;
+  when: always
+  artifacts:
+    paths:
+    - public
