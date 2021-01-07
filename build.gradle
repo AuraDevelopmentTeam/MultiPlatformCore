@@ -8,7 +8,11 @@ repositories {
 }
 
 dependencies {
+    // Dependencies
     shadowRelocate("eu.mikroskeem:picomaven:${picoMaven_version}") {
         exclude group: "org.slf4j"
     }
+
+    // SLF4J files
+    testRuntimeOnly "org.slf4j:slf4j-nop:${slf4j_version}"
 }

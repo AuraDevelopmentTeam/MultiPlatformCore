@@ -33,7 +33,7 @@ public class DependencyClassLoader extends URLClassLoader {
    * @param packageName The package base name all the plugin's classes are located in.<br>
    *     This is important because we must never load these classes ourselves if the parent {@link
    *     ClassLoader} has them loaded.
-   * @see DependencyClassLoader(String, String)
+   * @see #DependencyClassLoader(String, String)
    */
   public DependencyClassLoader(String packageName) {
     this(packageName, packageName + ".api");
@@ -62,7 +62,7 @@ public class DependencyClassLoader extends URLClassLoader {
    * @param packageName The package base name all the plugin's classes are located in.<br>
    *     This is important because we must never load these classes ourselves if the parent {@link
    *     ClassLoader} has them loaded.
-   * @see DependencyClassLoader(ClassLoader, String, String)
+   * @see #DependencyClassLoader(ClassLoader, String, String)
    */
   public DependencyClassLoader(ClassLoader parent, String packageName) {
     this(parent, packageName, packageName + ".api");
