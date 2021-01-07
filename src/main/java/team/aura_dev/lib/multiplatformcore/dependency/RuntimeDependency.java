@@ -65,7 +65,7 @@ public class RuntimeDependency {
         groupId,
         artifactId,
         version,
-        null,
+        classifier,
         transitive,
         Arrays.asList(
             ArtifactChecksums.md5HexSumOf(md5Hash), ArtifactChecksums.sha1HexSumOf(sha1Hash)));
@@ -76,6 +76,12 @@ public class RuntimeDependency {
         .map(exclusion -> exclusion.split(":"))
         .map(TransitivePatternExcluder::new)
         .collect(Collectors.toList());
+  }
+
+  public RuntimeDependencyBuilder toBuilder() {
+    return builder(groupId, artifactId, version, md5Hash, sha1Hash)
+        .classifier(classifier)
+        .exclusions(exclusions);
   }
 
   public static RuntimeDependencyBuilder builder(

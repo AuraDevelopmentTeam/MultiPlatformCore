@@ -5,6 +5,7 @@ import team.aura_dev.lib.multiplatformcore.dependency.RuntimeDependency;
 
 @UtilityClass
 public class TestRuntimeDependencies {
+  // Working ones
   public static final RuntimeDependency CONFIGURATE_HOCON =
       RuntimeDependency.builder(
               "org.spongepowered",
@@ -19,4 +20,14 @@ public class TestRuntimeDependencies {
           .exclusion("com.google.j2objc:j2objc-annotations")
           .exclusion("org.codehaus.mojo:animal-sniffer-annotations")
           .build();
+
+  // Broken ones
+  public static final RuntimeDependency CONFIGURATE_HOCON_MD5_MISMATCH =
+      CONFIGURATE_HOCON.toBuilder().md5Hash("00000000000000000000000000000000").build();
+  public static final RuntimeDependency CONFIGURATE_HOCON_SHA1_MISMATCH =
+      CONFIGURATE_HOCON.toBuilder().sha1Hash("0000000000000000000000000000000000000000").build();
+  public static final RuntimeDependency CONFIGURATE_HOCON_WRONG_ARTIFACT_ID =
+      CONFIGURATE_HOCON.toBuilder().artifactId("xxx").build();
+  public static final RuntimeDependency CONFIGURATE_HOCON_WRONG_CLASSIFIER =
+      CONFIGURATE_HOCON.toBuilder().classifier("xxx").build();
 }

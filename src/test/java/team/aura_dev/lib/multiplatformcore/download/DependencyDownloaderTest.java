@@ -47,6 +47,42 @@ public class DependencyDownloaderTest {
     assertCanLoadClass("com.typesafe.config.Config");
   }
 
+  @Test(expected = DependencyDownloadException.class)
+  public void md5HashMismatchTest() {
+    final DependencyDownloader dependencyDownloader =
+        new DependencyDownloader(dependencyClassLoader, libsDir);
+
+    dependencyDownloader.downloadAndInjectInClasspath(
+        Collections.singleton(TestRuntimeDependencies.CONFIGURATE_HOCON_MD5_MISMATCH));
+  }
+
+  @Test(expected = DependencyDownloadException.class)
+  public void sha1HashMismatchTest() {
+    final DependencyDownloader dependencyDownloader =
+        new DependencyDownloader(dependencyClassLoader, libsDir);
+
+    dependencyDownloader.downloadAndInjectInClasspath(
+        Collections.singleton(TestRuntimeDependencies.CONFIGURATE_HOCON_SHA1_MISMATCH));
+  }
+
+  @Test(expected = DependencyDownloadException.class)
+  public void wrongArtifactIdTest() {
+    final DependencyDownloader dependencyDownloader =
+        new DependencyDownloader(dependencyClassLoader, libsDir);
+
+    dependencyDownloader.downloadAndInjectInClasspath(
+        Collections.singleton(TestRuntimeDependencies.CONFIGURATE_HOCON_WRONG_ARTIFACT_ID));
+  }
+
+  @Test(expected = DependencyDownloadException.class)
+  public void wrongClassifierTest() {
+    final DependencyDownloader dependencyDownloader =
+        new DependencyDownloader(dependencyClassLoader, libsDir);
+
+    dependencyDownloader.downloadAndInjectInClasspath(
+        Collections.singleton(TestRuntimeDependencies.CONFIGURATE_HOCON_WRONG_CLASSIFIER));
+  }
+
   private static void assertCanLoadClass(String className) throws ClassNotFoundException {
     final Class<?> loadedClass = dependencyClassLoader.loadClass(className);
 
