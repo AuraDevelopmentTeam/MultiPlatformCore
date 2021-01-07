@@ -9,10 +9,19 @@ repositories {
 
 dependencies {
     // Dependencies
+    api "org.slf4j:slf4j-api:${slf4j_version}"
     shadowRelocate("eu.mikroskeem:picomaven:${picoMaven_version}") {
         exclude group: "org.slf4j"
     }
 
     // SLF4J files
     testRuntimeOnly "org.slf4j:slf4j-nop:${slf4j_version}"
+}
+
+shadowJar {
+    relocate("licenses", "${rootProject.group}.shadow.licenses")
+    relocate("META-INF/maven", "META-INF/shadow/maven")
+    relocate("META-INF/DEPENDENCIES", "META-INF/shadow/DEPENDENCIES")
+    relocate("META-INF/LICENSE", "META-INF/shadow/LICENSE")
+    relocate("META-INF/NOTICE", "META-INF/shadow/NOTICE")
 }
