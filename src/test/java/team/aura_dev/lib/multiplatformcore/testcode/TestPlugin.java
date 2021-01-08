@@ -1,0 +1,38 @@
+package team.aura_dev.lib.multiplatformcore.testcode;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+public class TestPlugin {
+  private final TestBootstrapPlugin plugin;
+  private final AtomicBoolean callFlag;
+
+  public TestPlugin(TestBootstrapPlugin plugin) {
+    this(plugin, (AtomicBoolean) null);
+  }
+
+  // Adding the pointless extra constructor argument to allow the code to differentiate
+  public TestPlugin(TestBootstrapPlugin plugin, AtomicBoolean callFlag, Throwable exception)
+      throws Throwable {
+    this(plugin, callFlag);
+
+    throw exception;
+  }
+
+  public void testCall() {
+    // Do Nothing
+  }
+
+  public void updateFlag() {
+    callFlag.set(true);
+  }
+
+  public void updateBootstrapFlag() {
+    plugin.flag.set(true);
+  }
+
+  public void exceptionTest(Throwable exception) throws Throwable {
+    throw exception;
+  }
+}
