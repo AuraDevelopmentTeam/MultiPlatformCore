@@ -22,6 +22,18 @@ public abstract class MultiProjectSLF4JBootstrap extends MultiProjectBootstrap {
   }
 
   /**
+   * Checks if SLF4J is present and loads it if not.<br>
+   * {@code slf4jVersion} defaults to @slf4jVersion@
+   *
+   * @param libsPath Where to unpack the jar files to
+   * @param version Which version of the slf4j-plugin-xxx to use
+   * @see #checkAndLoadSLF4J(Path, String, String)
+   */
+  public void checkAndLoadSLF4J(Path libsPath, String version) {
+    checkAndLoadSLF4J(libsPath, "@slf4jVersion@", version);
+  }
+
+  /**
    * Checks if SLF4J is present and loads it if not.
    *
    * @param libsPath Where to unpack the jar files to
