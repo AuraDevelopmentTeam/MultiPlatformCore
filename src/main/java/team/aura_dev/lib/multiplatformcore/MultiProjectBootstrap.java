@@ -46,9 +46,10 @@ public abstract class MultiProjectBootstrap {
    */
   public void initializePlugin(Object bootstrapPlugin, Object... params) {
     // Add plugin instance as first parameter
-    final Object[] mergedParams = new Object[params.length + 1];
-    mergedParams[0] = bootstrapPlugin;
-    System.arraycopy(params, 0, mergedParams, 1, params.length);
+    final Object[] mergedParams = new Object[params.length + 2];
+    mergedParams[0] = dependencyClassLoader;
+    mergedParams[1] = bootstrapPlugin;
+    System.arraycopy(params, 0, mergedParams, 2, params.length);
 
     plugin =
         initializePlugin(
