@@ -1,3 +1,10 @@
+Version 1.1.0
+-------------
+
+\+ Added `MultiProjectBootstrap` class to allow easier bootstrapping.  
+\+ Added `MultiProjectSLF4JBootstrap` class to allow bootstrapping with SLF4J support.  
+
+
 Version 1.0.0
 -------------
 
