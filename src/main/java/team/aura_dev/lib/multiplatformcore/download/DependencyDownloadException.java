@@ -4,7 +4,9 @@ import java.nio.file.Path;
 
 /**
  * An exception to indicate that downloading a dependency went wrong.<br>
- * Adds a small help message to the message to help admins resolve issues easier
+ * Adds a small help message to the message to help admins resolve issues easier.
+ *
+ * @author Yannick Schinko
  */
 public class DependencyDownloadException extends IllegalArgumentException {
   private static final long serialVersionUID = 6515795989694196936L;

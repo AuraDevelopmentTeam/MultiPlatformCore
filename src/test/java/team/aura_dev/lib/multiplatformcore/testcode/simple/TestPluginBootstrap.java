@@ -13,35 +13,31 @@ public class TestPluginBootstrap {
 
   public TestPluginBootstrap() {
     bootstrapper = new TestBootstrapper();
-    bootstrapper.initializePlugin(this);
+    bootstrappedPlugin = bootstrapper.initializePlugin(this);
 
-    bootstrappedPlugin = bootstrapper.getPlugin();
     flag = new AtomicBoolean(false);
   }
 
   public TestPluginBootstrap(AtomicBoolean callFlag) {
     bootstrapper = new TestBootstrapper();
-    bootstrapper.initializePlugin(this, callFlag);
+    bootstrappedPlugin = bootstrapper.initializePlugin(this, callFlag);
 
-    bootstrappedPlugin = bootstrapper.getPlugin();
     // Not relevant for this test
     flag = null;
   }
 
   public TestPluginBootstrap(Throwable exception) {
     bootstrapper = new TestBootstrapper();
-    bootstrapper.initializePlugin(this, null, exception);
+    bootstrappedPlugin = bootstrapper.initializePlugin(this, null, exception);
 
-    bootstrappedPlugin = bootstrapper.getPlugin();
     // Not relevant for this test
     flag = null;
   }
 
   public TestPluginBootstrap(String msg) {
     bootstrapper = new TestBootstrapper();
-    bootstrapper.initializePlugin(this, null, msg);
+    bootstrappedPlugin = bootstrapper.initializePlugin(this, null, msg);
 
-    bootstrappedPlugin = bootstrapper.getPlugin();
     // Not relevant for this test
     flag = null;
   }

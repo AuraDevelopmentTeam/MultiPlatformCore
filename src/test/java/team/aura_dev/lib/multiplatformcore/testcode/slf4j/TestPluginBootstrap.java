@@ -12,9 +12,7 @@ public class TestPluginBootstrap {
     // Is loaded in the test environment. Not much to do. Will never load anything in the first
     // place
     bootstrapper.checkAndLoadSLF4J(libsDir, "");
-    bootstrapper.initializePlugin(this);
-
-    bootstrappedPlugin = bootstrapper.getPlugin();
+    bootstrappedPlugin = bootstrapper.initializePlugin(this);
   }
 
   public void testCall() {

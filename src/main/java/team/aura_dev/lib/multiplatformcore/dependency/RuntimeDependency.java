@@ -37,6 +37,8 @@ import lombok.Value;
  *         .exclusion("org.codehaus.mojo:animal-sniffer-annotations")
  *         .build();
  * }</pre>
+ *
+ * @author Yannick Schinko
  */
 @SuppressFBWarnings(
     value = {"JLM_JSR166_UTILCONCURRENT_MONITORENTER", "RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"},

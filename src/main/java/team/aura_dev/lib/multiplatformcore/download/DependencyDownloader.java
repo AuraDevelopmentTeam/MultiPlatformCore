@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import team.aura_dev.lib.multiplatformcore.DependencyClassLoader;
 import team.aura_dev.lib.multiplatformcore.dependency.RuntimeDependency;
 
+/** @author Yannick Schinko */
 // TODO: Logging!
 @RequiredArgsConstructor
 public class DependencyDownloader {

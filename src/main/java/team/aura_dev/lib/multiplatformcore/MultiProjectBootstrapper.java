@@ -7,6 +7,10 @@ import java.security.PrivilegedAction;
 import java.util.Arrays;
 import lombok.Getter;
 
+/**
+ * @param <T>
+ * @author Yannick Schinko
+ */
 public abstract class MultiProjectBootstrapper<T> {
   @Getter protected final Class<T> pluginBaseClass;
   @Getter protected final DependencyClassLoader dependencyClassLoader;
@@ -34,10 +38,32 @@ public abstract class MultiProjectBootstrapper<T> {
     this.dependencyClassLoader = dependencyClassLoader;
   }
 
+  /**
+   * Return the package name. This is passed to the {@link DependencyClassLoader} if you call {@link
+   * #MultiProjectBootstrapper(Class)}. If you call any of the other two constructors this method is
+   * ignored.
+   *
+   * @return the package name of this class.<br>
+   *     <i>Note:</i> {@code this.getClass()}, not {@code MultiProjectBootstrapper.class}. So if
+   *     your implementing class is in the correct package, you don't need to override this method.
+   *     Else it is a good idea to do so!
+   */
   protected String getPackageName() {
     return getClass().getPackage().getName();
   }
 
+  /**
+   * Return the package name of the API package. This is passed to the {@link DependencyClassLoader}
+   * if you call {@link #MultiProjectBootstrapper(Class)}. If you call any of the other two
+   * constructors this method is ignored.
+   *
+   * @return the package name of this class with {@code .api} appended.<br>
+   *     <i>Note:</i> {@code this.getClass()}, not {@code MultiProjectBootstrapper.class}. So if
+   *     your API package is called {@code api} and sits in the same package as {@link
+   *     #getPackageName()} returns, you don't need to override this method. Else it is a good idea
+   *     to do so!
+   * @see #getPackageName()
+   */
   protected String getApiPackageName() {
     return getPackageName() + ".api";
   }
