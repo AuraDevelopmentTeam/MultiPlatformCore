@@ -84,15 +84,18 @@ public abstract class MultiProjectSLF4JBootstrapper<T> extends MultiProjectBoots
       justification = "We're never getting null here")
   protected void extractAndInjectSLF4JLib(Path libsPath, String slf4jVersion, String libName)
       throws IOException {
-    Path outFile =
+    final Path outFile =
         libsPath.resolve(
             "org/slf4j/" + libName + "/slf4j-" + libName + "-" + slf4jVersion + ".jar");
     Files.createDirectories(outFile.getParent());
 
+    final String resourceName = "org/slf4j/slf4j-" + libName + "-" + slf4jVersion + ".zip";
+
     if (!Files.exists(outFile)) {
-      try (InputStream libStream =
-          dependencyClassLoader.getResourceAsStream(
-              "org/slf4j/slf4j-" + libName + "-" + slf4jVersion + ".zip")) {
+      try (InputStream libStream = dependencyClassLoader.getResourceAsStream(resourceName)) {
+        if (libStream == null)
+          throw new IOException("Resource \"" + resourceName + "\" could not be found");
+
         Files.copy(libStream, outFile);
       }
     }

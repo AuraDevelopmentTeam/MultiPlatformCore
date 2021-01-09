@@ -3,6 +3,7 @@ package team.aura_dev.lib.multiplatformcore;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.net.URL;
@@ -97,6 +98,23 @@ public class MultiProjectSLF4JBootstrapperTest {
     // Will not get added twice
     assertEquals(2, urls.length);
     assertUrlIsOk(urls[1]);
+  }
+
+  @Test
+  public void manualLoadNotFoundTest() throws IOException {
+    final MultiProjectSLF4JBootstrapper<Object> bootstrapper =
+        new MultiProjectSLF4JBootstrapper<Object>(Object.class) {};
+    final Path libsDir = folder.newFolder("libsDir").toPath();
+
+    try {
+      bootstrapper.extractAndInjectSLF4JLib(libsDir, SLF4J_VERSION, "X");
+
+      fail("Expected an exception to be thrown");
+    } catch (IOException e) {
+      assertEquals(
+          "Resource \"org/slf4j/slf4j-X-" + SLF4J_VERSION + ".zip\" could not be found",
+          e.getMessage());
+    }
   }
 
   private static void assertUrlIsOk(URL url) {

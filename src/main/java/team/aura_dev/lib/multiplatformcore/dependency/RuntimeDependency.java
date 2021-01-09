@@ -75,7 +75,7 @@ public class RuntimeDependency {
 
   private List<TransitivePatternExcluder> generateExclusionPatterns() {
     return exclusions.stream()
-        .map(exclusion -> exclusion.split(":"))
+        .map(exclusion -> exclusion.split(":", 3))
         .map(TransitivePatternExcluder::new)
         .collect(Collectors.toList());
   }

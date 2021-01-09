@@ -116,6 +116,7 @@ public class DependencyDownloader {
         + ':'
         + dependency.getArtifactId()
         + ':'
-        + dependency.getVersion();
+        + dependency.getVersion()
+        + ((dependency.getClassifier() == null) ? "" : (':' + dependency.getClassifier()));
   }
 }
