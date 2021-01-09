@@ -22,6 +22,7 @@ public class DependencyClassLoader extends URLClassLoader {
   private static final Method findLoadedClassMethod = getFindLoadedClassMethod();
 
   protected final ClassLoader parent;
+  protected final String ownClassName;
   protected final String packageName;
   protected final String apiPackageName;
 
@@ -83,9 +84,10 @@ public class DependencyClassLoader extends URLClassLoader {
     // Start off with adding its own jar URL
     super(getOwnJarURL(), parent);
 
+    this.ownClassName = DependencyClassLoader.class.getName();
     this.parent = parent;
-    this.packageName = packageName;
-    this.apiPackageName = apiPackageName;
+    this.packageName = packageName + '.';
+    this.apiPackageName = apiPackageName + '.';
   }
 
   @Override
@@ -100,7 +102,7 @@ public class DependencyClassLoader extends URLClassLoader {
 
     // Reuse existing instances of own Classes if loaded in parent ClassLoader
     // (Like the bootstrap Classes or this Class(Loader))
-    if ((loadedClass == null) && name.startsWith(packageName)) {
+    if ((loadedClass == null) && (name.startsWith(packageName) || name.equals(ownClassName))) {
       try {
         loadedClass = (Class<?>) findLoadedClassMethod.invoke(parent, name);
       } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {

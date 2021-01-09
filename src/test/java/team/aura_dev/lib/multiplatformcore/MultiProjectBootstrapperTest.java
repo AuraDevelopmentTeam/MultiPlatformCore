@@ -8,7 +8,6 @@ import static org.junit.Assert.fail;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.junit.Ignore;
 import org.junit.Test;
 import team.aura_dev.lib.multiplatformcore.testcode.TestBootstrapper;
 import team.aura_dev.lib.multiplatformcore.testcode.TestPluginBootstrap;
@@ -38,7 +37,6 @@ public class MultiProjectBootstrapperTest {
         direct.getDependencyClassLoader().apiPackageName);
   }
 
-  @Ignore
   @Test
   public void correctClassLoaderTest() {
     final TestPluginBootstrap plugin = new TestPluginBootstrap();

@@ -71,6 +71,7 @@ public abstract class MultiProjectBootstrapper<T> {
               .filter(con -> con.getParameterCount() == params.length)
               .findFirst()
               .orElseThrow(NoSuchMethodException::new);
+
       return (T) constructor.newInstance(params);
     } catch (InvocationTargetException e) {
       // Properly unwrap the InvocationTargetException

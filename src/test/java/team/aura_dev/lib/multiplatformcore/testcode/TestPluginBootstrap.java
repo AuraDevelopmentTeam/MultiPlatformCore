@@ -8,7 +8,7 @@ public class TestPluginBootstrap {
   // Only for testing. Normally the bootstrapper wouldn't be saved!
   @Getter private final TestBootstrapper bootstrapper;
   @Getter private final TestPluginApi bootstrappedPlugin;
-  final AtomicBoolean flag;
+  public final AtomicBoolean flag;
 
   public TestPluginBootstrap() {
     bootstrapper = new TestBootstrapper();
