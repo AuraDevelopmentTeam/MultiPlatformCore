@@ -5,15 +5,20 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import team.aura_dev.lib.multiplatformcore.testcode.TestBadBootstrapper;
 import team.aura_dev.lib.multiplatformcore.testcode.TestBootstrapper;
 import team.aura_dev.lib.multiplatformcore.testcode.TestPluginBootstrap;
 
 public class MultiProjectBootstrapperTest {
+  @Rule public TemporaryFolder folder = new TemporaryFolder();
+
   @Test
   public void constructorTest() {
     final MultiProjectBootstrapper<Object> base =
@@ -79,6 +84,16 @@ public class MultiProjectBootstrapperTest {
   }
 
   @Test
+  public void utilityFlagTest() {
+    final AtomicBoolean flag = new AtomicBoolean(false);
+    final TestPluginBootstrap plugin = new TestPluginBootstrap(flag);
+
+    plugin.updateUtilityFlag();
+
+    assertTrue(flag.get());
+  }
+
+  @Test
   public void constructorExceptionTest() {
     final Throwable exception = new RuntimeException("Example Exception Message");
 
@@ -133,5 +148,21 @@ public class MultiProjectBootstrapperTest {
           "The loaded plugin instance is of type \"team.aura_dev.lib.multiplatformcore.testcode.TestPlugin\" and cannot be cast to the plugin base class \"java.lang.String\".",
           e.getMessage());
     }
+  }
+
+  @Test
+  public void configurateTest() throws IOException {
+    final TestPluginBootstrap plugin = new TestPluginBootstrap();
+
+    // Just calling with no feedback to make sure no exceptions
+    plugin.configurateTest(folder.newFolder("libsDir").toPath());
+  }
+
+  @Test(expected = NoClassDefFoundError.class)
+  public void configurateNoLoadTest() throws IOException {
+    final TestPluginBootstrap plugin = new TestPluginBootstrap();
+
+    // Just calling with no feedback to make sure no exceptions
+    plugin.configurateNoLoadTest(folder.newFolder("libsDir").toPath());
   }
 }

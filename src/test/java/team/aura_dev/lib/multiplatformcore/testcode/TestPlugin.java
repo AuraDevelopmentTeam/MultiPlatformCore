@@ -1,9 +1,15 @@
 package team.aura_dev.lib.multiplatformcore.testcode;
 
+import java.nio.file.Path;
+import java.util.Collections;
 import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.RequiredArgsConstructor;
 import team.aura_dev.lib.multiplatformcore.DependencyClassLoader;
+import team.aura_dev.lib.multiplatformcore.download.DependencyDownloader;
+import team.aura_dev.lib.multiplatformcore.download.TestRuntimeDependencies;
 import team.aura_dev.lib.multiplatformcore.testcode.api.TestPluginApi;
+import team.aura_dev.lib.multiplatformcore.testcode.example.ConfigurateTest;
+import team.aura_dev.lib.multiplatformcore.testcode.example.ExampleUtility;
 
 @RequiredArgsConstructor
 public class TestPlugin implements TestPluginApi {
@@ -39,7 +45,26 @@ public class TestPlugin implements TestPluginApi {
     plugin.flag.set(true);
   }
 
+  @Override
+  public void updateUtilityFlag() {
+    ExampleUtility.setFlag(callFlag);
+  }
+
   public void exceptionTest(Throwable exception) throws Throwable {
     throw exception;
+  }
+
+  @Override
+  public void configurateTest(Path libsDir) {
+    new DependencyDownloader(classLoader, libsDir)
+        .downloadAndInjectInClasspath(
+            Collections.singleton(TestRuntimeDependencies.CONFIGURATE_HOCON));
+    ConfigurateTest.configurateTest();
+  }
+
+  @Override
+  public void configurateNoLoadTest(Path libsDir) {
+    // Explicitly not loading the dependencies here to force an error
+    ConfigurateTest.configurateTest();
   }
 }

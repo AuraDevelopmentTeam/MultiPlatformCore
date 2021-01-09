@@ -1,5 +1,6 @@
 package team.aura_dev.lib.multiplatformcore.testcode;
 
+import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.Getter;
 import team.aura_dev.lib.multiplatformcore.testcode.api.TestPluginApi;
@@ -59,7 +60,19 @@ public class TestPluginBootstrap {
     return flag.get();
   }
 
+  public void updateUtilityFlag() {
+    bootstrappedPlugin.updateUtilityFlag();
+  }
+
   public void exceptionTest(Throwable exception) throws Throwable {
     bootstrappedPlugin.exceptionTest(exception);
+  }
+
+  public void configurateTest(Path libsDir) {
+    bootstrappedPlugin.configurateTest(libsDir);
+  }
+
+  public void configurateNoLoadTest(Path libsDir) {
+    bootstrappedPlugin.configurateNoLoadTest(libsDir);
   }
 }

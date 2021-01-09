@@ -16,8 +16,9 @@ dependencies {
         exclude group: "org.slf4j"
     }
 
-    // SLF4J files
+    // Test files
     testRuntimeOnly "org.slf4j:slf4j-nop:${slf4j_version}"
+    testCompileOnly "org.spongepowered:configurate-hocon:3.6.1"
 }
 
 processSources {

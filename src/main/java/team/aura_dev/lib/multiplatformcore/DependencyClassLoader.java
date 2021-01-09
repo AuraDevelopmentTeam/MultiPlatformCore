@@ -120,9 +120,9 @@ public class DependencyClassLoader extends URLClassLoader {
       }
     }
 
-    // The Class hasn't been found yet
-    // Let's try finding it in our parent ClassLoader
-    // This will throw ClassNotFoundException in failure
+    // The Class hasn't been found yet.
+    // Let's try finding it in our parent ClassLoader.
+    // This will throw ClassNotFoundException in case of failure.
     if (loadedClass == null) {
       loadedClass = super.loadClass(name, resolve);
     }
