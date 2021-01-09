@@ -79,13 +79,22 @@ public class RuntimeDependency {
         .map(TransitivePatternExcluder::new)
         .collect(Collectors.toList());
   }
-
-  public RuntimeDependencyBuilder toBuilder() {
-    return builder(groupId, artifactId, version, md5Hash, sha1Hash)
-        .classifier(classifier)
-        .exclusions(exclusions);
-  }
-
+  /**
+   * Creates a new builder with these required attributes already set.<br>
+   * Both hashes are required as neither MD5, nor SHA1 are considered particularly secure. But
+   * there's no known way to create a modified file that has both the same MD5 and SHA1 hash. We use
+   * theses types of hashes in the first place because most mavens precalculate those two.
+   *
+   * @param groupId The group ID of the artifact
+   * @param artifactId The artifact ID of the artifact
+   * @param version The version of the artifact
+   * @param md5Hash The md5 hash of the artifact file in HEX notation (should be 32 characters long)
+   * @param sha1Hash The sha1 hash of the artifact file in HEX notation (should be 40 characters
+   *     long)
+   * @return A {@link RuntimeDependencyBuilder} that can either be turned into a {@link
+   *     RuntimeDependency} right away or can be further modified like given a classifier or can be
+   *     transitive.
+   */
   public static RuntimeDependencyBuilder builder(
       @Nonnull String groupId,
       @Nonnull String artifactId,
@@ -93,6 +102,19 @@ public class RuntimeDependency {
       @Nonnull String md5Hash,
       @Nonnull String sha1Hash) {
     return new RuntimeDependencyBuilder(groupId, artifactId, version, md5Hash, sha1Hash);
+  }
+
+  /**
+   * Turns this {@link RuntimeDependency} object back into a builder so you can create another
+   * {@link RuntimeDependency} object that shares many properties with this.
+   *
+   * @return A {@link RuntimeDependencyBuilder} that if built right away would return an equivalent
+   *     {@link RuntimeDependency} object to this.
+   */
+  public RuntimeDependencyBuilder toBuilder() {
+    return builder(groupId, artifactId, version, md5Hash, sha1Hash)
+        .classifier(classifier)
+        .exclusions(exclusions);
   }
 
   public static class RuntimeDependencyBuilder {

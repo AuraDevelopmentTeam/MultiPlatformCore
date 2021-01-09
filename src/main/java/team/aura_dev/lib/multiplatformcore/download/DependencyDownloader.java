@@ -20,13 +20,29 @@ import lombok.RequiredArgsConstructor;
 import team.aura_dev.lib.multiplatformcore.DependencyClassLoader;
 import team.aura_dev.lib.multiplatformcore.dependency.RuntimeDependency;
 
-/** @author Yannick Schinko */
+/**
+ * This class takes care of downloading your dependencies recursively and injecting them into the
+ * classpath.
+ *
+ * @author Yannick Schinko
+ */
 // TODO: Logging!
 @RequiredArgsConstructor
 public class DependencyDownloader {
   private final DependencyClassLoader classLoader;
   private final Path libsDir;
 
+  /**
+   * Downloads all dependencies and their dependencies (if it is declared transitive) if not already
+   * downloaded and then injects it into the classpath.
+   *
+   * <p>The dependencies are saved in {@link #libsDir}.<br>
+   * The exact path is {@code ${libsDir}/${groupId.replace('.',
+   * '/')}/${artifactId}/${version}/${artifactId}-${version}.jar}. Essentially the path maven itself
+   * would use relative to {@link #libsDir}. (The classifier is taken into account as well.)
+   *
+   * @param dependencies The list of dependencies to download and inject
+   */
   @SuppressFBWarnings(
       value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE",
       justification = "SpotBugs is incorrect in this case")

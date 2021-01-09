@@ -8,20 +8,56 @@ import java.nio.file.Path;
 import java.security.PrivilegedAction;
 
 /**
- * @param <T>
+ * This class is more or less the entry point into the {@link ClassLoader} magic. Creating the
+ * {@link ClassLoader} and constructing the actual instance of your plugin happens all here.<br>
+ * If something goes wrong with the {@link ClassLoader} itself you probably fix it in your child
+ * class of this.<br>
+ * This class in particular also lets you load SLF4J in a simpler manner at runtime. The only thing
+ * you need to do is to provide the SLF4J files as a resource (because the downloader needs SLF4J
+ * itself so we can't have it download those files) and call the methods below to have it do all the
+ * magic for you.
+ *
+ * @param <T> the base type of the plugin to load. Must not be the class of the plugin itself.<br>
+ *     Ideally it's a minimal interface that only contains the calls the bootstrap plugin needs to
+ *     call.
  * @author Yannick Schinko
  */
 public abstract class MultiProjectSLF4JBootstrapper<T> extends MultiProjectBootstrapper<T> {
+  /**
+   * Constructs a {@link MultiProjectSLF4JBootstrapper} and initializes the {@link
+   * DependencyClassLoader} with the values from {@link #getPackageName()} and {@link
+   * #getApiPackageName()}.
+   *
+   * @param pluginBaseClass The plugin base class. After the plugin instance has been created is
+   *     checked if it can be cast to this class.
+   */
   protected MultiProjectSLF4JBootstrapper(Class<T> pluginBaseClass) {
     super(pluginBaseClass);
   }
 
+  /**
+   * Constructs a {@link MultiProjectSLF4JBootstrapper} and initializes the {@link
+   * DependencyClassLoader} with the {@code dependencyClassLoaderGenerator}.
+   *
+   * @param pluginBaseClass The plugin base class. After the plugin instance has been created is
+   *     checked if it can be cast to this class.
+   * @param dependencyClassLoaderGenerator The {@link PrivilegedAction} the {@link
+   *     DependencyClassLoader} will be generated from.
+   */
   protected MultiProjectSLF4JBootstrapper(
       Class<T> pluginBaseClass,
       PrivilegedAction<DependencyClassLoader> dependencyClassLoaderGenerator) {
     super(pluginBaseClass, dependencyClassLoaderGenerator);
   }
 
+  /**
+   * Constructs a {@link MultiProjectSLF4JBootstrapper} and initializes the {@link
+   * DependencyClassLoader} with {@code dependencyClassLoader}.
+   *
+   * @param pluginBaseClass The plugin base class. After the plugin instance has been created is
+   *     checked if it can be cast to this class.
+   * @param dependencyClassLoader The {@link DependencyClassLoader} instance to use.
+   */
   protected MultiProjectSLF4JBootstrapper(
       Class<T> pluginBaseClass, DependencyClassLoader dependencyClassLoader) {
     super(pluginBaseClass, dependencyClassLoader);
