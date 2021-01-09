@@ -33,6 +33,20 @@ public class DependencyDownloader {
   private final Path libsDir;
 
   /**
+   * Downloads all dependencies, that should be downloaded according to their respective conditions,
+   * and their dependencies (if it is declared transitive) if not already downloaded and then
+   * injects it into the classpath.<br>
+   * <strong>!!! The conditions are evaluated during this call! Not earlier, not later !!!</strong>
+   *
+   * @param dependencies A list of dependencies with their associated conditions
+   * @see #downloadAndInjectInClasspath(Collection)
+   * @see DependencyList#generateList()
+   */
+  public void downloadAndInjectInClasspath(DependencyList dependencies) {
+    downloadAndInjectInClasspath(dependencies.generateList());
+  }
+
+  /**
    * Downloads all dependencies and their dependencies (if it is declared transitive) if not already
    * downloaded and then injects it into the classpath.
    *
