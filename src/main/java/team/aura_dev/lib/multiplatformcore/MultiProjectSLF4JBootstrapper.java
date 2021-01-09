@@ -40,9 +40,10 @@ public abstract class MultiProjectSLF4JBootstrapper<T> extends MultiProjectBoots
    *
    * @param libsPath Where to unpack the jar files to
    * @param slf4jVersion Which slf4j version to use
-   * @param version Which version of the slf4j-plugin-xxx to use
+   * @param pluginName Which plugin to use. The file name is
+   *     "slf4j-&lt;pluginName&gt;-&lt;slf4jVersion&gt;.zip
    */
-  public void checkAndLoadSLF4J(Path libsPath, String slf4jVersion, String version) {
+  public void checkAndLoadSLF4J(Path libsPath, String slf4jVersion, String pluginName) {
     try {
       Class.forName("org.slf4j.impl.StaticLoggerBinder");
 
@@ -54,7 +55,7 @@ public abstract class MultiProjectSLF4JBootstrapper<T> extends MultiProjectBoots
 
     try {
       extractAndInjectSLF4JLib(libsPath, slf4jVersion, "api");
-      extractAndInjectSLF4JLib(libsPath, slf4jVersion, "plugin-" + version + "-" + slf4jVersion);
+      extractAndInjectSLF4JLib(libsPath, slf4jVersion, pluginName);
     } catch (IOException e) {
       throw new IllegalStateException("Unexpected IOException while trying to load SLF4J", e);
     }
