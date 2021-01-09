@@ -124,11 +124,11 @@ public class MultiProjectSLF4JBootstrapperTest {
         "expected URL to start with <file:/> but was:<" + urlStr + ">",
         urlStr.startsWith("file:/"));
     assertTrue(
-        "expected URL to end with <libsDir/org/slf4j/api/slf4j-api-"
+        "expected URL to end with <libsDir/org/slf4j/slf4j-api/slf4j-api-"
             + SLF4J_VERSION
             + ".jar> but was:<"
             + urlStr
             + ">",
-        urlStr.endsWith("libsDir/org/slf4j/api/slf4j-api-" + SLF4J_VERSION + ".jar"));
+        urlStr.endsWith("libsDir/org/slf4j/slf4j-api/slf4j-api-" + SLF4J_VERSION + ".jar"));
   }
 }

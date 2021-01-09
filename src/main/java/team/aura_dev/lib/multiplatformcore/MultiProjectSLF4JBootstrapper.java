@@ -106,8 +106,8 @@ public abstract class MultiProjectSLF4JBootstrapper<T> extends MultiProjectBoots
    * Extracts the specified SLF4J zip file from the current jar, saves it in the {@code libsPath}
    * and then injects in the {@link #dependencyClassLoader}.<br>
    * Specifically this loads the resource {@code org/slf4j/slf4j-${libName}.zip} and saves it to
-   * {@code ${libsPath}/org/slf4j/${libName}/slf4j-${libName}.jar}. Then it injects it into the
-   * {@link #dependencyClassLoader}.
+   * {@code ${libsPath}/org/slf4j/slf4j-${libName}/slf4j-${libName}-${slf4jVersion}.jar}. Then it
+   * injects it into the classpath.
    *
    * @param libsPath Where to unpack the SLF4J file to
    * @param slf4jVersion Which slf4j version to use
@@ -122,7 +122,7 @@ public abstract class MultiProjectSLF4JBootstrapper<T> extends MultiProjectBoots
       throws IOException {
     final Path outFile =
         libsPath.resolve(
-            "org/slf4j/" + libName + "/slf4j-" + libName + "-" + slf4jVersion + ".jar");
+            "org/slf4j/slf4j-" + libName + "/slf4j-" + libName + "-" + slf4jVersion + ".jar");
     Files.createDirectories(outFile.getParent());
 
     final String resourceName = "org/slf4j/slf4j-" + libName + "-" + slf4jVersion + ".zip";
