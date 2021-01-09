@@ -30,12 +30,35 @@ public class DependencyDownloaderTest {
   }
 
   @Test
-  public void downloadAndInjectTest() throws ClassNotFoundException {
+  public void downloadAndInjectCollectionTest() throws ClassNotFoundException {
     final DependencyDownloader dependencyDownloader =
         new DependencyDownloader(dependencyClassLoader, libsDir);
 
     dependencyDownloader.downloadAndInjectInClasspath(
         Collections.singleton(TestRuntimeDependencies.CONFIGURATE_HOCON));
+
+    assertIsFile(
+        libsDir.resolve("org/spongepowered/configurate-hocon/3.6.1/configurate-hocon-3.6.1.jar"));
+    assertIsFile(
+        libsDir.resolve("org/spongepowered/configurate-core/3.6.1/configurate-core-3.6.1.jar"));
+    assertIsFile(libsDir.resolve("com/typesafe/config/1.3.1/config-1.3.1.jar"));
+
+    assertCanLoadClass("ninja.leaping.configurate.ConfigurationNode");
+    assertCanLoadClass("com.typesafe.config.Config");
+  }
+
+  @Test
+  public void downloadAndInjectDependencyListTest() throws ClassNotFoundException {
+    final DependencyDownloader dependencyDownloader =
+        new DependencyDownloader(dependencyClassLoader, libsDir);
+    final DependencyList list = new DependencyList();
+
+    list.addIfClassMissing(
+        TestRuntimeDependencies.CONFIGURATE_HOCON, "ninja.leaping.configurate.ConfigurationNode");
+    list.addIfClassMissing(
+        TestRuntimeDependencies.CONFIGURATE_HOCON_MD5_MISMATCH, "java.lang.Object");
+
+    dependencyDownloader.downloadAndInjectInClasspath(list);
 
     assertIsFile(
         libsDir.resolve("org/spongepowered/configurate-hocon/3.6.1/configurate-hocon-3.6.1.jar"));
