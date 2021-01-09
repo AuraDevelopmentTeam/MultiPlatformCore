@@ -75,4 +75,8 @@ public class TestPluginBootstrap {
   public void configurateNoLoadTest(Path libsDir) {
     bootstrappedPlugin.configurateNoLoadTest(libsDir);
   }
+
+  public void apiInteraction() {
+    bootstrappedPlugin.apiInteraction();
+  }
 }

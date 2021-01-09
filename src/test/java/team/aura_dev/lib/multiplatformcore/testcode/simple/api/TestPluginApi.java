@@ -16,4 +16,6 @@ public interface TestPluginApi {
   public void configurateTest(Path libsDir);
 
   public void configurateNoLoadTest(Path libsDir);
+
+  public void apiInteraction();
 }

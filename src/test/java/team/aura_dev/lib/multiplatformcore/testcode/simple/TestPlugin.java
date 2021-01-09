@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import team.aura_dev.lib.multiplatformcore.DependencyClassLoader;
 import team.aura_dev.lib.multiplatformcore.download.DependencyDownloader;
 import team.aura_dev.lib.multiplatformcore.download.TestRuntimeDependencies;
+import team.aura_dev.lib.multiplatformcore.testcode.simple.api.InstanceHolder;
 import team.aura_dev.lib.multiplatformcore.testcode.simple.api.TestPluginApi;
 import team.aura_dev.lib.multiplatformcore.testcode.simple.example.ConfigurateTest;
 import team.aura_dev.lib.multiplatformcore.testcode.simple.example.ExampleUtility;
@@ -66,5 +67,13 @@ public class TestPlugin implements TestPluginApi {
   public void configurateNoLoadTest(Path libsDir) {
     // Explicitly not loading the dependencies here to force an error
     ConfigurateTest.configurateTest();
+  }
+
+  @Override
+  public void apiInteraction() {
+    InstanceHolder.setInstance(this);
+
+    assert this == InstanceHolder.getInstance();
+    assert InstanceHolder.class.getClassLoader() != classLoader;
   }
 }

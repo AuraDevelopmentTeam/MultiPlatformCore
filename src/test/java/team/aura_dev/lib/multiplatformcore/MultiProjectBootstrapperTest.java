@@ -165,4 +165,12 @@ public class MultiProjectBootstrapperTest {
     // Just calling with no feedback to make sure no exceptions
     plugin.configurateNoLoadTest(folder.newFolder("libsDir").toPath());
   }
+
+  @Test
+  public void apiInteractionTest() {
+    final TestPluginBootstrap plugin = new TestPluginBootstrap();
+
+    // Just calling with no feedback to make sure no exceptions
+    plugin.apiInteraction();
+  }
 }
