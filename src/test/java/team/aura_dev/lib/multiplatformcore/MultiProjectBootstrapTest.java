@@ -8,17 +8,19 @@ import static org.junit.Assert.fail;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.junit.Ignore;
 import org.junit.Test;
+import team.aura_dev.lib.multiplatformcore.testcode.BootstrapTest;
 import team.aura_dev.lib.multiplatformcore.testcode.TestBootstrapPlugin;
 
 public class MultiProjectBootstrapTest {
   @Test
   public void constructorTest() {
-    final MultiProjectBootstrap base = new MultiProjectBootstrap() {};
-    final MultiProjectBootstrap generator =
-        new MultiProjectBootstrap(() -> new DependencyClassLoader("@group@")) {};
-    final MultiProjectBootstrap direct =
-        new MultiProjectBootstrap(
+    final MultiProjectBootstrap<Object> base = new MultiProjectBootstrap<Object>() {};
+    final MultiProjectBootstrap<Object> generator =
+        new MultiProjectBootstrap<Object>(() -> new DependencyClassLoader("@group@")) {};
+    final MultiProjectBootstrap<Object> direct =
+        new MultiProjectBootstrap<Object>(
             AccessController.doPrivileged(
                 (PrivilegedAction<DependencyClassLoader>)
                     () -> new DependencyClassLoader("@group@"))) {};
@@ -34,6 +36,19 @@ public class MultiProjectBootstrapTest {
     assertEquals(
         base.getDependencyClassLoader().apiPackageName,
         direct.getDependencyClassLoader().apiPackageName);
+  }
+
+  @Ignore
+  @Test
+  public void correctClassLoaderTest() {
+    final TestBootstrapPlugin plugin = new TestBootstrapPlugin();
+    final BootstrapTest bootstrapper = plugin.getBootstrapPlugin();
+
+    assertEquals(
+        "team.aura_dev.lib.multiplatformcore.testcode.TestPlugin",
+        bootstrapper.getPluginClass().getName());
+    assertSame(
+        bootstrapper.getDependencyClassLoader(), bootstrapper.getPluginClass().getClassLoader());
   }
 
   @Test
@@ -84,9 +99,8 @@ public class MultiProjectBootstrapTest {
       plugin.exceptionTest(exception);
 
       fail("Expected an exception to be thrown");
-    } catch (IllegalStateException e) {
-      assertEquals("Calling exceptionTest resulted in an exception", e.getMessage());
-      assertSame(exception, e.getCause());
+    } catch (Throwable e) {
+      assertSame(exception, e);
     }
   }
 
@@ -99,22 +113,6 @@ public class MultiProjectBootstrapTest {
     } catch (IllegalStateException e) {
       assertEquals("Loading the plugin class failed", e.getMessage());
       assertEquals("argument type mismatch", e.getCause().getMessage());
-    }
-  }
-
-  @Test
-  public void noSuchMethodTest() {
-    final TestBootstrapPlugin plugin = new TestBootstrapPlugin();
-
-    try {
-      plugin.noSuchMethodTest();
-
-      fail("Expected an exception to be thrown");
-    } catch (IllegalStateException e) {
-      assertEquals("Calling noSuchMethodTest failed", e.getMessage());
-      assertEquals(
-          "team.aura_dev.lib.multiplatformcore.testcode.TestPlugin.noSuchMethodTest()",
-          e.getCause().getMessage());
     }
   }
 }

@@ -3,9 +3,10 @@ package team.aura_dev.lib.multiplatformcore.testcode;
 import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.RequiredArgsConstructor;
 import team.aura_dev.lib.multiplatformcore.DependencyClassLoader;
+import team.aura_dev.lib.multiplatformcore.testcode.api.TestPluginApi;
 
 @RequiredArgsConstructor
-public class TestPlugin {
+public class TestPlugin implements TestPluginApi {
   private final DependencyClassLoader classLoader;
   private final TestBootstrapPlugin plugin;
   private final AtomicBoolean callFlag;

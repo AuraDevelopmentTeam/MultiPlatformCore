@@ -1,9 +1,10 @@
 package team.aura_dev.lib.multiplatformcore.testcode;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import lombok.Getter;
 
 public class TestBootstrapPlugin {
-  private final BootstrapTest bootstrapPlugin;
+  @Getter private final BootstrapTest bootstrapPlugin;
   final AtomicBoolean flag;
 
   public TestBootstrapPlugin() {
@@ -39,24 +40,20 @@ public class TestBootstrapPlugin {
   }
 
   public void testCall() {
-    bootstrapPlugin.testCall();
+    bootstrapPlugin.getPlugin().testCall();
   }
 
   public void updateFlag() {
-    bootstrapPlugin.updateFlag();
+    bootstrapPlugin.getPlugin().updateFlag();
   }
 
   public boolean updateBootstrapFlag() {
-    bootstrapPlugin.updateBootstrapFlag();
+    bootstrapPlugin.getPlugin().updateBootstrapFlag();
 
     return flag.get();
   }
 
-  public void exceptionTest(Throwable exception) {
-    bootstrapPlugin.exceptionTest(exception);
-  }
-
-  public void noSuchMethodTest() {
-    bootstrapPlugin.noSuchMethodTest();
+  public void exceptionTest(Throwable exception) throws Throwable {
+    bootstrapPlugin.getPlugin().exceptionTest(exception);
   }
 }

@@ -7,11 +7,11 @@ import java.security.PrivilegedAction;
 import java.util.Arrays;
 import lombok.Getter;
 
-public abstract class MultiProjectBootstrap {
+public abstract class MultiProjectBootstrap<T> {
   @Getter protected final DependencyClassLoader dependencyClassLoader;
 
-  protected Object plugin;
-  protected Class<?> pluginClass;
+  @Getter protected T plugin;
+  @Getter protected Class<? extends T> pluginClass;
 
   protected MultiProjectBootstrap() {
     dependencyClassLoader =
@@ -44,7 +44,7 @@ public abstract class MultiProjectBootstrap {
    *     name. Also gets prepended to the other parameters
    * @param params parameters forwarded to the plugin class constructor
    */
-  public void initializePlugin(Object bootstrapPlugin, Object... params) {
+  public T initializePlugin(Object bootstrapPlugin, Object... params) {
     // Add plugin instance as first parameter
     final Object[] mergedParams = new Object[params.length + 2];
     mergedParams[0] = dependencyClassLoader;
@@ -54,29 +54,12 @@ public abstract class MultiProjectBootstrap {
     plugin =
         initializePlugin(
             bootstrapPlugin.getClass().getName().replace("Bootstrap", ""), mergedParams);
-    pluginClass = plugin.getClass();
+    pluginClass = (Class<? extends T>) plugin.getClass();
+
+    return plugin;
   }
 
-  protected void callMethod(String name) {
-    callMethod(name, new Class<?>[0]);
-  }
-
-  protected void callMethod(String name, Class<?>[] types, Object... params) {
-    try {
-      pluginClass.getMethod(name, types).invoke(plugin, params);
-    } catch (InvocationTargetException e) {
-      // Properly unwrap the InvocationTargetException
-      throw new IllegalStateException(
-          "Calling " + name + " resulted in an exception", e.getTargetException());
-    } catch (IllegalAccessException
-        | IllegalArgumentException
-        | NoSuchMethodException
-        | SecurityException e) {
-      throw new IllegalStateException("Calling " + name + " failed", e);
-    }
-  }
-
-  private Object initializePlugin(String pluginClassName, Object... params) {
+  private T initializePlugin(String pluginClassName, Object... params) {
     try {
       final Class<?> pluginClass = dependencyClassLoader.loadClass(pluginClassName);
       // Checking if the parameter count matches is good enough of a way to find the matching
@@ -88,7 +71,7 @@ public abstract class MultiProjectBootstrap {
               .filter(con -> con.getParameterCount() == params.length)
               .findFirst()
               .orElseThrow(NoSuchMethodException::new);
-      return constructor.newInstance(params);
+      return (T) constructor.newInstance(params);
     } catch (InvocationTargetException e) {
       // Properly unwrap the InvocationTargetException
       throw new IllegalStateException(

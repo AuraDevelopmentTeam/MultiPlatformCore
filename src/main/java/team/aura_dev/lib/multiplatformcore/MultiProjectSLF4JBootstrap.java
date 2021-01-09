@@ -7,7 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.PrivilegedAction;
 
-public abstract class MultiProjectSLF4JBootstrap extends MultiProjectBootstrap {
+public abstract class MultiProjectSLF4JBootstrap<T> extends MultiProjectBootstrap<T> {
   protected MultiProjectSLF4JBootstrap() {
     super();
   }
