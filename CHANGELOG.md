@@ -1,3 +1,10 @@
+Version 1.1.1
+-------------
+
+\* Renaming Bootstrapper class names. From `...Bootstrap` to `...Bootstrapper`.  
+\* Bootstrappers now return the actual plugin instance instead of hacking around with reflections.  
+
+
 Version 1.1.0
 -------------
 
