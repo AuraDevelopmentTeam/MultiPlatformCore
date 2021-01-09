@@ -1,3 +1,12 @@
+Version 1.2.0
+-------------
+
+\* Fixed class loading issue by forcing to pass a `Class` instance of the base plugin class along the bootstrapper constructor.  
+\* Several small fixes and better handling of rare edge cases.  
+\* Pretty much full test coverage.  
+\* Full Javadocs documentation.  
+
+
 Version 1.1.1
 -------------
 
