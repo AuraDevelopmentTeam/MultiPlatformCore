@@ -1,3 +1,9 @@
+Version 1.2.1
+-------------
+
+\+ Added utility class `DependencyList`.  
+
+
 Version 1.2.0
 -------------
 
