@@ -9,6 +9,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.Test;
+import team.aura_dev.lib.multiplatformcore.testcode.TestBadBootstrapper;
 import team.aura_dev.lib.multiplatformcore.testcode.TestBootstrapper;
 import team.aura_dev.lib.multiplatformcore.testcode.TestPluginBootstrap;
 
@@ -114,6 +115,23 @@ public class MultiProjectBootstrapperTest {
     } catch (IllegalStateException e) {
       assertEquals("Loading the plugin class failed", e.getMessage());
       assertEquals("argument type mismatch", e.getCause().getMessage());
+    }
+  }
+
+  @Test
+  public void badBaseClassTest() {
+    final TestPluginBootstrap plugin = new TestPluginBootstrap();
+
+    try {
+      final TestBadBootstrapper bootstrapper = new TestBadBootstrapper();
+
+      bootstrapper.initializePlugin(plugin);
+
+      fail("Expected an exception to be thrown");
+    } catch (IllegalStateException e) {
+      assertEquals(
+          "The loaded plugin instance is of type \"team.aura_dev.lib.multiplatformcore.testcode.TestPlugin\" and cannot be cast to the plugin base class \"java.lang.String\".",
+          e.getMessage());
     }
   }
 }

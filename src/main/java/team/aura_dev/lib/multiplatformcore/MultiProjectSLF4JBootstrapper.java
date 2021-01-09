@@ -8,18 +8,18 @@ import java.nio.file.Path;
 import java.security.PrivilegedAction;
 
 public abstract class MultiProjectSLF4JBootstrapper<T> extends MultiProjectBootstrapper<T> {
-  protected MultiProjectSLF4JBootstrapper(Class<? extends T> pluginBaseClass) {
+  protected MultiProjectSLF4JBootstrapper(Class<T> pluginBaseClass) {
     super(pluginBaseClass);
   }
 
   protected MultiProjectSLF4JBootstrapper(
-      Class<? extends T> pluginBaseClass,
+      Class<T> pluginBaseClass,
       PrivilegedAction<DependencyClassLoader> dependencyClassLoaderGenerator) {
     super(pluginBaseClass, dependencyClassLoaderGenerator);
   }
 
   protected MultiProjectSLF4JBootstrapper(
-      Class<? extends T> pluginBaseClass, DependencyClassLoader dependencyClassLoader) {
+      Class<T> pluginBaseClass, DependencyClassLoader dependencyClassLoader) {
     super(pluginBaseClass, dependencyClassLoader);
   }
 

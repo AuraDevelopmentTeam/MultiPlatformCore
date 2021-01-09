@@ -8,13 +8,13 @@ import java.util.Arrays;
 import lombok.Getter;
 
 public abstract class MultiProjectBootstrapper<T> {
-  @Getter protected final Class<? extends T> pluginBaseClass;
+  @Getter protected final Class<T> pluginBaseClass;
   @Getter protected final DependencyClassLoader dependencyClassLoader;
 
   @Getter protected T plugin;
   @Getter protected Class<? extends T> pluginClass;
 
-  protected MultiProjectBootstrapper(Class<? extends T> pluginBaseClass) {
+  protected MultiProjectBootstrapper(Class<T> pluginBaseClass) {
     this.pluginBaseClass = pluginBaseClass;
     this.dependencyClassLoader =
         AccessController.doPrivileged(
@@ -23,13 +23,13 @@ public abstract class MultiProjectBootstrapper<T> {
   }
 
   protected MultiProjectBootstrapper(
-      Class<? extends T> pluginBaseClass,
+      Class<T> pluginBaseClass,
       PrivilegedAction<DependencyClassLoader> dependencyClassLoaderGenerator) {
     this(pluginBaseClass, AccessController.doPrivileged(dependencyClassLoaderGenerator));
   }
 
   protected MultiProjectBootstrapper(
-      Class<? extends T> pluginBaseClass, DependencyClassLoader dependencyClassLoader) {
+      Class<T> pluginBaseClass, DependencyClassLoader dependencyClassLoader) {
     this.pluginBaseClass = pluginBaseClass;
     this.dependencyClassLoader = dependencyClassLoader;
   }
@@ -48,7 +48,13 @@ public abstract class MultiProjectBootstrapper<T> {
    * @param bootstrapPlugin the instance of the bootstrap class. Used to determine the actual plugin
    *     name. Also gets prepended to the other parameters
    * @param params parameters forwarded to the plugin class constructor
+   * @return the instance of the freshly bootstrapped plugin
+   * @throws IllegalStateException when the bootstrapped plugin is not of type {@link
+   *     #pluginBaseClass} (as passed as the first constructor argument).
+   * @throws IllegalStateException when calling the constructor caused an exception. The underlying
+   *     exception is passed saved in the cause of this exception.
    */
+  @SuppressWarnings("unchecked")
   public T initializePlugin(Object bootstrapPlugin, Object... params) {
     // Add plugin instance as first parameter
     final Object[] mergedParams = new Object[params.length + 2];
@@ -56,25 +62,27 @@ public abstract class MultiProjectBootstrapper<T> {
     mergedParams[1] = bootstrapPlugin;
     System.arraycopy(params, 0, mergedParams, 2, params.length);
 
-    final T tempPlugin =
+    final Object tempPlugin =
         initializePlugin(
             bootstrapPlugin.getClass().getName().replace("Bootstrap", ""), mergedParams);
 
     if (!pluginBaseClass.isInstance(tempPlugin)) {
       throw new IllegalStateException(
-          "The loaded plugin instance is of type "
-              + tempPlugin.getClass().toString()
-              + " and cannot be cast to the plugin base class "
-              + pluginBaseClass.toString());
+          "The loaded plugin instance is of type \""
+              + tempPlugin.getClass().getName()
+              + "\" and cannot be cast to the plugin base class \""
+              + pluginBaseClass.getName()
+              + "\".");
     }
 
-    plugin = tempPlugin;
+    // "Unchecked" casts are here. But we literally just checked them above. So all is fine
+    plugin = (T) tempPlugin;
     pluginClass = (Class<? extends T>) plugin.getClass();
 
     return plugin;
   }
 
-  private T initializePlugin(String pluginClassName, Object... params) {
+  private Object initializePlugin(String pluginClassName, Object... params) {
     try {
       final Class<?> pluginClass = dependencyClassLoader.loadClass(pluginClassName);
       // Checking if the parameter count matches is good enough of a way to find the matching
@@ -87,7 +95,7 @@ public abstract class MultiProjectBootstrapper<T> {
               .findFirst()
               .orElseThrow(NoSuchMethodException::new);
 
-      return (T) constructor.newInstance(params);
+      return constructor.newInstance(params);
     } catch (InvocationTargetException e) {
       // Properly unwrap the InvocationTargetException
       throw new IllegalStateException(
