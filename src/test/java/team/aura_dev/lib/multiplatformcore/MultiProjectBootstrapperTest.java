@@ -10,17 +10,17 @@ import java.security.PrivilegedAction;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.Ignore;
 import org.junit.Test;
-import team.aura_dev.lib.multiplatformcore.testcode.BootstrapTest;
-import team.aura_dev.lib.multiplatformcore.testcode.TestBootstrapPlugin;
+import team.aura_dev.lib.multiplatformcore.testcode.TestBootstrapper;
+import team.aura_dev.lib.multiplatformcore.testcode.TestPluginBootstrap;
 
-public class MultiProjectBootstrapTest {
+public class MultiProjectBootstrapperTest {
   @Test
   public void constructorTest() {
-    final MultiProjectBootstrap<Object> base = new MultiProjectBootstrap<Object>() {};
-    final MultiProjectBootstrap<Object> generator =
-        new MultiProjectBootstrap<Object>(() -> new DependencyClassLoader("@group@")) {};
-    final MultiProjectBootstrap<Object> direct =
-        new MultiProjectBootstrap<Object>(
+    final MultiProjectBootstrapper<Object> base = new MultiProjectBootstrapper<Object>() {};
+    final MultiProjectBootstrapper<Object> generator =
+        new MultiProjectBootstrapper<Object>(() -> new DependencyClassLoader("@group@")) {};
+    final MultiProjectBootstrapper<Object> direct =
+        new MultiProjectBootstrapper<Object>(
             AccessController.doPrivileged(
                 (PrivilegedAction<DependencyClassLoader>)
                     () -> new DependencyClassLoader("@group@"))) {};
@@ -41,8 +41,8 @@ public class MultiProjectBootstrapTest {
   @Ignore
   @Test
   public void correctClassLoaderTest() {
-    final TestBootstrapPlugin plugin = new TestBootstrapPlugin();
-    final BootstrapTest bootstrapper = plugin.getBootstrapPlugin();
+    final TestPluginBootstrap plugin = new TestPluginBootstrap();
+    final TestBootstrapper bootstrapper = plugin.getBootstrapper();
 
     assertEquals(
         "team.aura_dev.lib.multiplatformcore.testcode.TestPlugin",
@@ -53,7 +53,7 @@ public class MultiProjectBootstrapTest {
 
   @Test
   public void simpleTest() {
-    final TestBootstrapPlugin plugin = new TestBootstrapPlugin();
+    final TestPluginBootstrap plugin = new TestPluginBootstrap();
 
     // Just calling with no feedback to make sure no exceptions
     plugin.testCall();
@@ -62,7 +62,7 @@ public class MultiProjectBootstrapTest {
   @Test
   public void flagTest() {
     final AtomicBoolean flag = new AtomicBoolean(false);
-    final TestBootstrapPlugin plugin = new TestBootstrapPlugin(flag);
+    final TestPluginBootstrap plugin = new TestPluginBootstrap(flag);
 
     plugin.updateFlag();
 
@@ -71,7 +71,7 @@ public class MultiProjectBootstrapTest {
 
   @Test
   public void bootstrapFlagTest() {
-    final TestBootstrapPlugin plugin = new TestBootstrapPlugin();
+    final TestPluginBootstrap plugin = new TestPluginBootstrap();
 
     assertTrue(plugin.updateBootstrapFlag());
   }
@@ -81,7 +81,7 @@ public class MultiProjectBootstrapTest {
     final Throwable exception = new RuntimeException("Example Exception Message");
 
     try {
-      new TestBootstrapPlugin(exception);
+      new TestPluginBootstrap(exception);
 
       fail("Expected an exception to be thrown");
     } catch (IllegalStateException e) {
@@ -93,7 +93,7 @@ public class MultiProjectBootstrapTest {
   @Test
   public void methodExceptionTest() {
     final Throwable exception = new RuntimeException("Example Exception Message");
-    final TestBootstrapPlugin plugin = new TestBootstrapPlugin();
+    final TestPluginBootstrap plugin = new TestPluginBootstrap();
 
     try {
       plugin.exceptionTest(exception);
@@ -107,7 +107,7 @@ public class MultiProjectBootstrapTest {
   @Test
   public void noSuchConstructorTest() {
     try {
-      new TestBootstrapPlugin("boom");
+      new TestPluginBootstrap("boom");
 
       fail("Expected an exception to be thrown");
     } catch (IllegalStateException e) {

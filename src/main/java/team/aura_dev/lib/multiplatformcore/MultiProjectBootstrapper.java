@@ -7,25 +7,25 @@ import java.security.PrivilegedAction;
 import java.util.Arrays;
 import lombok.Getter;
 
-public abstract class MultiProjectBootstrap<T> {
+public abstract class MultiProjectBootstrapper<T> {
   @Getter protected final DependencyClassLoader dependencyClassLoader;
 
   @Getter protected T plugin;
   @Getter protected Class<? extends T> pluginClass;
 
-  protected MultiProjectBootstrap() {
+  protected MultiProjectBootstrapper() {
     dependencyClassLoader =
         AccessController.doPrivileged(
             (PrivilegedAction<DependencyClassLoader>)
                 () -> new DependencyClassLoader(getPackageName(), getApiPackageName()));
   }
 
-  protected MultiProjectBootstrap(
+  protected MultiProjectBootstrapper(
       PrivilegedAction<DependencyClassLoader> dependencyClassLoaderGenerator) {
     this(AccessController.doPrivileged(dependencyClassLoaderGenerator));
   }
 
-  protected MultiProjectBootstrap(DependencyClassLoader dependencyClassLoader) {
+  protected MultiProjectBootstrapper(DependencyClassLoader dependencyClassLoader) {
     this.dependencyClassLoader = dependencyClassLoader;
   }
 

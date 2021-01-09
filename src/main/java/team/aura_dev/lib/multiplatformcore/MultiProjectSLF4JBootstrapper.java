@@ -7,17 +7,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.PrivilegedAction;
 
-public abstract class MultiProjectSLF4JBootstrap<T> extends MultiProjectBootstrap<T> {
-  protected MultiProjectSLF4JBootstrap() {
+public abstract class MultiProjectSLF4JBootstrapper<T> extends MultiProjectBootstrapper<T> {
+  protected MultiProjectSLF4JBootstrapper() {
     super();
   }
 
-  protected MultiProjectSLF4JBootstrap(
+  protected MultiProjectSLF4JBootstrapper(
       PrivilegedAction<DependencyClassLoader> dependencyClassLoaderGenerator) {
     super(dependencyClassLoaderGenerator);
   }
 
-  protected MultiProjectSLF4JBootstrap(DependencyClassLoader dependencyClassLoader) {
+  protected MultiProjectSLF4JBootstrapper(DependencyClassLoader dependencyClassLoader) {
     super(dependencyClassLoader);
   }
 

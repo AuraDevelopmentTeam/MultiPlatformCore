@@ -8,17 +8,17 @@ import team.aura_dev.lib.multiplatformcore.testcode.api.TestPluginApi;
 @RequiredArgsConstructor
 public class TestPlugin implements TestPluginApi {
   private final DependencyClassLoader classLoader;
-  private final TestBootstrapPlugin plugin;
+  private final TestPluginBootstrap plugin;
   private final AtomicBoolean callFlag;
 
-  public TestPlugin(DependencyClassLoader classLoader, TestBootstrapPlugin plugin) {
+  public TestPlugin(DependencyClassLoader classLoader, TestPluginBootstrap plugin) {
     this(classLoader, plugin, (AtomicBoolean) null);
   }
 
   // Adding the pointless extra constructor argument to allow the code to differentiate
   public TestPlugin(
       DependencyClassLoader classLoader,
-      TestBootstrapPlugin plugin,
+      TestPluginBootstrap plugin,
       AtomicBoolean callFlag,
       Throwable exception)
       throws Throwable {
