@@ -15,11 +15,14 @@ import team.aura_dev.lib.multiplatformcore.testcode.TestPluginBootstrap;
 public class MultiProjectBootstrapperTest {
   @Test
   public void constructorTest() {
-    final MultiProjectBootstrapper<Object> base = new MultiProjectBootstrapper<Object>() {};
+    final MultiProjectBootstrapper<Object> base =
+        new MultiProjectBootstrapper<Object>(Object.class) {};
     final MultiProjectBootstrapper<Object> generator =
-        new MultiProjectBootstrapper<Object>(() -> new DependencyClassLoader("@group@")) {};
+        new MultiProjectBootstrapper<Object>(
+            Object.class, () -> new DependencyClassLoader("@group@")) {};
     final MultiProjectBootstrapper<Object> direct =
         new MultiProjectBootstrapper<Object>(
+            Object.class,
             AccessController.doPrivileged(
                 (PrivilegedAction<DependencyClassLoader>)
                     () -> new DependencyClassLoader("@group@"))) {};

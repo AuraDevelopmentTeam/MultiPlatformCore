@@ -8,24 +8,29 @@ import java.util.Arrays;
 import lombok.Getter;
 
 public abstract class MultiProjectBootstrapper<T> {
+  @Getter protected final Class<? extends T> pluginBaseClass;
   @Getter protected final DependencyClassLoader dependencyClassLoader;
 
   @Getter protected T plugin;
   @Getter protected Class<? extends T> pluginClass;
 
-  protected MultiProjectBootstrapper() {
-    dependencyClassLoader =
+  protected MultiProjectBootstrapper(Class<? extends T> pluginBaseClass) {
+    this.pluginBaseClass = pluginBaseClass;
+    this.dependencyClassLoader =
         AccessController.doPrivileged(
             (PrivilegedAction<DependencyClassLoader>)
                 () -> new DependencyClassLoader(getPackageName(), getApiPackageName()));
   }
 
   protected MultiProjectBootstrapper(
+      Class<? extends T> pluginBaseClass,
       PrivilegedAction<DependencyClassLoader> dependencyClassLoaderGenerator) {
-    this(AccessController.doPrivileged(dependencyClassLoaderGenerator));
+    this(pluginBaseClass, AccessController.doPrivileged(dependencyClassLoaderGenerator));
   }
 
-  protected MultiProjectBootstrapper(DependencyClassLoader dependencyClassLoader) {
+  protected MultiProjectBootstrapper(
+      Class<? extends T> pluginBaseClass, DependencyClassLoader dependencyClassLoader) {
+    this.pluginBaseClass = pluginBaseClass;
     this.dependencyClassLoader = dependencyClassLoader;
   }
 
@@ -51,9 +56,19 @@ public abstract class MultiProjectBootstrapper<T> {
     mergedParams[1] = bootstrapPlugin;
     System.arraycopy(params, 0, mergedParams, 2, params.length);
 
-    plugin =
+    final T tempPlugin =
         initializePlugin(
             bootstrapPlugin.getClass().getName().replace("Bootstrap", ""), mergedParams);
+
+    if (!pluginBaseClass.isInstance(tempPlugin)) {
+      throw new IllegalStateException(
+          "The loaded plugin instance is of type "
+              + tempPlugin.getClass().toString()
+              + " and cannot be cast to the plugin base class "
+              + pluginBaseClass.toString());
+    }
+
+    plugin = tempPlugin;
     pluginClass = (Class<? extends T>) plugin.getClass();
 
     return plugin;
