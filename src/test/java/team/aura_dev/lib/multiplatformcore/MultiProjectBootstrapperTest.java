@@ -12,9 +12,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import team.aura_dev.lib.multiplatformcore.testcode.TestBadBootstrapper;
-import team.aura_dev.lib.multiplatformcore.testcode.TestBootstrapper;
-import team.aura_dev.lib.multiplatformcore.testcode.TestPluginBootstrap;
+import team.aura_dev.lib.multiplatformcore.testcode.simple.TestBadBootstrapper;
+import team.aura_dev.lib.multiplatformcore.testcode.simple.TestBootstrapper;
+import team.aura_dev.lib.multiplatformcore.testcode.simple.TestPluginBootstrap;
 
 public class MultiProjectBootstrapperTest {
   @Rule public TemporaryFolder folder = new TemporaryFolder();
@@ -52,7 +52,7 @@ public class MultiProjectBootstrapperTest {
     final TestBootstrapper bootstrapper = plugin.getBootstrapper();
 
     assertEquals(
-        "team.aura_dev.lib.multiplatformcore.testcode.TestPlugin",
+        "team.aura_dev.lib.multiplatformcore.testcode.simple.TestPlugin",
         bootstrapper.getPluginClass().getName());
     assertSame(
         bootstrapper.getDependencyClassLoader(), bootstrapper.getPluginClass().getClassLoader());
@@ -145,7 +145,7 @@ public class MultiProjectBootstrapperTest {
       fail("Expected an exception to be thrown");
     } catch (IllegalStateException e) {
       assertEquals(
-          "The loaded plugin instance is of type \"team.aura_dev.lib.multiplatformcore.testcode.TestPlugin\" and cannot be cast to the plugin base class \"java.lang.String\".",
+          "The loaded plugin instance is of type \"team.aura_dev.lib.multiplatformcore.testcode.simple.TestPlugin\" and cannot be cast to the plugin base class \"java.lang.String\".",
           e.getMessage());
     }
   }

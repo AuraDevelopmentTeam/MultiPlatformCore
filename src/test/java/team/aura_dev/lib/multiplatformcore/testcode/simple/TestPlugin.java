@@ -1,4 +1,4 @@
-package team.aura_dev.lib.multiplatformcore.testcode;
+package team.aura_dev.lib.multiplatformcore.testcode.simple;
 
 import java.nio.file.Path;
 import java.util.Collections;
@@ -7,9 +7,9 @@ import lombok.RequiredArgsConstructor;
 import team.aura_dev.lib.multiplatformcore.DependencyClassLoader;
 import team.aura_dev.lib.multiplatformcore.download.DependencyDownloader;
 import team.aura_dev.lib.multiplatformcore.download.TestRuntimeDependencies;
-import team.aura_dev.lib.multiplatformcore.testcode.api.TestPluginApi;
-import team.aura_dev.lib.multiplatformcore.testcode.example.ConfigurateTest;
-import team.aura_dev.lib.multiplatformcore.testcode.example.ExampleUtility;
+import team.aura_dev.lib.multiplatformcore.testcode.simple.api.TestPluginApi;
+import team.aura_dev.lib.multiplatformcore.testcode.simple.example.ConfigurateTest;
+import team.aura_dev.lib.multiplatformcore.testcode.simple.example.ExampleUtility;
 
 @RequiredArgsConstructor
 public class TestPlugin implements TestPluginApi {

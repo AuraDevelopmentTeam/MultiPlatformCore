@@ -28,11 +28,12 @@ public abstract class MultiProjectSLF4JBootstrapper<T> extends MultiProjectBoots
    * {@code slf4jVersion} defaults to @slf4jVersion@
    *
    * @param libsPath Where to unpack the jar files to
-   * @param version Which version of the slf4j-plugin-xxx to use
+   * @param pluginName Which plugin to use. The file name is
+   *     "slf4j-&lt;pluginName&gt;-&lt;slf4jVersion&gt;.zip"
    * @see #checkAndLoadSLF4J(Path, String, String)
    */
-  public void checkAndLoadSLF4J(Path libsPath, String version) {
-    checkAndLoadSLF4J(libsPath, "@slf4jVersion@", version);
+  public void checkAndLoadSLF4J(Path libsPath, String pluginName) {
+    checkAndLoadSLF4J(libsPath, "@slf4jVersion@", pluginName);
   }
 
   /**
@@ -41,7 +42,7 @@ public abstract class MultiProjectSLF4JBootstrapper<T> extends MultiProjectBoots
    * @param libsPath Where to unpack the jar files to
    * @param slf4jVersion Which slf4j version to use
    * @param pluginName Which plugin to use. The file name is
-   *     "slf4j-&lt;pluginName&gt;-&lt;slf4jVersion&gt;.zip
+   *     "slf4j-&lt;pluginName&gt;-&lt;slf4jVersion&gt;.zip"
    */
   public void checkAndLoadSLF4J(Path libsPath, String slf4jVersion, String pluginName) {
     try {

@@ -1,4 +1,4 @@
-package team.aura_dev.lib.multiplatformcore.testcode.example;
+package team.aura_dev.lib.multiplatformcore.testcode.simple.example;
 
 import lombok.experimental.UtilityClass;
 import ninja.leaping.configurate.ConfigurationNode;

@@ -1,4 +1,4 @@
-package team.aura_dev.lib.multiplatformcore.testcode.api;
+package team.aura_dev.lib.multiplatformcore.testcode.simple.api;
 
 import java.nio.file.Path;
 

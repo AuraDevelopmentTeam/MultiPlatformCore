@@ -1,9 +1,9 @@
-package team.aura_dev.lib.multiplatformcore.testcode;
+package team.aura_dev.lib.multiplatformcore.testcode.simple;
 
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.Getter;
-import team.aura_dev.lib.multiplatformcore.testcode.api.TestPluginApi;
+import team.aura_dev.lib.multiplatformcore.testcode.simple.api.TestPluginApi;
 
 public class TestPluginBootstrap {
   // Only for testing. Normally the bootstrapper wouldn't be saved!

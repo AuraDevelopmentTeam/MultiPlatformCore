@@ -1,7 +1,7 @@
-package team.aura_dev.lib.multiplatformcore.testcode;
+package team.aura_dev.lib.multiplatformcore.testcode.simple;
 
 import team.aura_dev.lib.multiplatformcore.MultiProjectBootstrapper;
-import team.aura_dev.lib.multiplatformcore.testcode.api.TestPluginApi;
+import team.aura_dev.lib.multiplatformcore.testcode.simple.api.TestPluginApi;
 
 public class TestBootstrapper extends MultiProjectBootstrapper<TestPluginApi> {
   public TestBootstrapper() {
