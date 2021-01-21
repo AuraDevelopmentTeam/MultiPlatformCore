@@ -3,6 +3,7 @@ package team.aura_dev.lib.multiplatformcore.download;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.function.Predicate;
 import org.junit.Test;
 import team.aura_dev.lib.multiplatformcore.dependency.RuntimeDependency;
@@ -83,5 +84,36 @@ public class DependencyListTest {
             TestRuntimeDependencies.CONFIGURATE_HOCON,
             TestRuntimeDependencies.CONFIGURATE_HOCON_MD5_MISMATCH),
         list.generateList());
+  }
+
+  @Test
+  public void removeTest() {
+    final DependencyList list = new DependencyList();
+
+    list.add(TestRuntimeDependencies.CONFIGURATE_HOCON);
+    list.add(TestRuntimeDependencies.CONFIGURATE_HOCON_MD5_MISMATCH);
+
+    list.remove(TestRuntimeDependencies.CONFIGURATE_HOCON);
+    list.remove(TestRuntimeDependencies.CONFIGURATE_HOCON_MD5_MISMATCH);
+
+    list.add(TestRuntimeDependencies.CONFIGURATE_HOCON);
+
+    assertEquals(
+        Collections.singletonList(TestRuntimeDependencies.CONFIGURATE_HOCON), list.generateList());
+  }
+
+  @Test
+  public void denyTest() {
+    final DependencyList list = new DependencyList();
+
+    list.add(TestRuntimeDependencies.CONFIGURATE_HOCON);
+    list.add(TestRuntimeDependencies.CONFIGURATE_HOCON_MD5_MISMATCH);
+
+    list.deny(TestRuntimeDependencies.CONFIGURATE_HOCON_MD5_MISMATCH);
+
+    list.add(TestRuntimeDependencies.CONFIGURATE_HOCON_MD5_MISMATCH);
+
+    assertEquals(
+        Collections.singletonList(TestRuntimeDependencies.CONFIGURATE_HOCON), list.generateList());
   }
 }
