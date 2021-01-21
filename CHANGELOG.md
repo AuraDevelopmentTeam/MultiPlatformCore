@@ -1,3 +1,10 @@
+Version 1.2.2
+-------------
+
+\+ Added `remove` and `deny` methods to `DependencyList` for more flexibility.  
+\+ Added AuraDev maven repo.  
+
+
 Version 1.2.1
 -------------
 
