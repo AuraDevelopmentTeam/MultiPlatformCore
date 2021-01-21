@@ -1,12 +1,11 @@
 package team.aura_dev.lib.multiplatformcore.download;
 
-import java.util.LinkedList;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.function.Function;
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import team.aura_dev.lib.multiplatformcore.dependency.RuntimeDependency;
 
@@ -16,7 +15,8 @@ import team.aura_dev.lib.multiplatformcore.dependency.RuntimeDependency;
  * @author Yannick Schinko
  */
 public class DependencyList {
-  private final List<Entry> dependencyEntries = new LinkedList<>();
+  private final Map<RuntimeDependency, Predicate<RuntimeDependency>> dependencyEntries =
+      new LinkedHashMap<>();
 
   /**
    * Generates a list of all dependencies which have their associated conditions met the moment this
@@ -28,7 +28,10 @@ public class DependencyList {
    * @see DependencyDownloader#downloadAndInjectInClasspath(DependencyList)
    */
   public List<RuntimeDependency> generateList() {
-    return dependencyEntries.stream().flatMap(Entry::checkCondition).collect(Collectors.toList());
+    return dependencyEntries.entrySet().stream()
+        .filter(entry -> entry.getValue().test(entry.getKey()))
+        .map(Map.Entry::getKey)
+        .collect(Collectors.toList());
   }
 
   /**
@@ -37,7 +40,7 @@ public class DependencyList {
    * @param dependency The dependency to add to this list.
    */
   public void add(RuntimeDependency dependency) {
-    addEntry(new Entry(dependency));
+    addEntry(dependency, x -> true);
   }
 
   /**
@@ -48,7 +51,7 @@ public class DependencyList {
    *     <strong>Does not</strong> depend on the dependency itself.
    */
   public void add(RuntimeDependency dependency, Supplier<Boolean> condition) {
-    addEntry(new Entry(dependency, condition));
+    addEntry(dependency, x -> condition.get());
   }
 
   /**
@@ -59,7 +62,7 @@ public class DependencyList {
    *     <strong>Does</strong> depend on the dependency itself.
    */
   public void add(RuntimeDependency dependency, Predicate<RuntimeDependency> condition) {
-    addEntry(new Entry(dependency, condition));
+    addEntry(dependency, condition);
   }
 
   /**
@@ -71,50 +74,46 @@ public class DependencyList {
    *     not.
    */
   public void addIfClassMissing(RuntimeDependency dependency, String className) {
-    addEntry(new Entry(dependency, new ClassMissingPredicate(className)));
+    addEntry(dependency, new ClassMissingPredicate(className));
   }
 
   /**
-   * A little helper method that adds the {@link Entry Entries} to the list.<br>
-   * Currently does nothing itself besides adding the {@link Entry} to the list. Justification is
-   * that child classes need a way to add {@link Entry Entries} themselves and also there may be
-   * logic in the future to prevent duplicate entries. Like {@code and}ing or {@code or}ing all
-   * conditions together.
+   * Removes a dependency from the list. It can be added back again later.
    *
-   * @param entry The {@link Entry} to add to the list.
+   * @param dependency The dependency to remove from this list
    */
-  protected void addEntry(Entry entry) {
-    dependencyEntries.add(entry);
+  public void remove(RuntimeDependency dependency) {
+    dependencyEntries.remove(dependency);
   }
 
   /**
-   * A class that represents a {@link RuntimeDependency} associated with its {@link Predicate} or
-   * condition. Has a little {@link Stream} helper function.
+   * Prevents a dependency from ever fulfilling its condition.<br>
+   * Essentially removes the dependency and contrary to {@link #remove(RuntimeDependency)} prevents
+   * it from being added back.
+   *
+   * <p>The only way to ever add it back is by calling {@link #remove(RuntimeDependency)} first and
+   * then adding the dependency with the new condition
+   *
+   * @param dependency The dependency to deny from this list
    */
-  @RequiredArgsConstructor
-  protected static class Entry {
-    private final RuntimeDependency dependency;
-    private final Predicate<RuntimeDependency> condition;
+  public void deny(RuntimeDependency dependency) {
+    dependencyEntries.put(dependency, x -> false);
+  }
 
-    public Entry(RuntimeDependency dependency) {
-      this(dependency, x -> true);
+  /**
+   * A little helper method that adds the Entries to the map.<br>
+   * If the dependency is not already in the map this just adds it to the map. If it is the previous
+   * condition and the new condition are logically anded.
+   *
+   * @param dependency The dependency to add to this list.
+   * @param condition A condition to be evaluated when determining which dependencies to load.
+   */
+  protected void addEntry(RuntimeDependency dependency, Predicate<RuntimeDependency> condition) {
+    if (dependencyEntries.containsKey(dependency)) {
+      condition = dependencyEntries.get(dependency).and(condition);
     }
 
-    public Entry(RuntimeDependency dependency, Supplier<Boolean> condition) {
-      this(dependency, x -> condition.get());
-    }
-
-    /**
-     * Helper function to be used in a {@link Stream}. Filters out dependencies that don't need to
-     * be loaded and maps it to the respective dependency in one step. To be used in {@link
-     * Stream#flatMap(Function)}.
-     *
-     * @return a {@link Stream} with just the dependency if the conditon evaluated to {@code true}
-     *     or an empty {@link Stream} if not.
-     */
-    public Stream<RuntimeDependency> checkCondition() {
-      return condition.test(dependency) ? Stream.of(dependency) : Stream.empty();
-    }
+    dependencyEntries.put(dependency, condition);
   }
 
   @RequiredArgsConstructor
