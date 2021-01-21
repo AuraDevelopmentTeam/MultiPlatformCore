@@ -1,3 +1,9 @@
+Version 1.2.3
+-------------
+
+\* Fixed release.  
+
+
 Version 1.2.2
 -------------
 
