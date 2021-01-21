@@ -157,6 +157,8 @@ public class RuntimeDependency {
   public static class Maven {
     public static final Maven MAVEN_CENTRAL = new Maven("https://repo1.maven.org/maven2");
     public static final Maven SPONGE = new Maven("https://repo.spongepowered.org/maven");
+    public static final Maven AURA_DEV =
+        new Maven("https://maven.aura-dev.team/repository/auradev-releases");
 
     @Nonnull private final String urlString;
 
