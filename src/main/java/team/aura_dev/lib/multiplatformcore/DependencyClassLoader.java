@@ -4,6 +4,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 
 /**
  * A custom {@link ClassLoader} implementation that allows adding {@link URL}s during runtime.
@@ -144,10 +147,15 @@ public class DependencyClassLoader extends URLClassLoader {
   private static Method getFindLoadedClassMethod() {
     try {
       final Method method = ClassLoader.class.getDeclaredMethod("findLoadedClass", String.class);
-      method.setAccessible(true);
+      AccessController.doPrivileged(
+          (PrivilegedExceptionAction<Void>)
+              () -> {
+                method.setAccessible(true);
+                return null;
+              });
 
       return method;
-    } catch (NoSuchMethodException | SecurityException e) {
+    } catch (NoSuchMethodException | SecurityException | PrivilegedActionException e) {
       // Can't continue
       throw new IllegalStateException("Exception while trying to prepare the ClassLoader", e);
     }
