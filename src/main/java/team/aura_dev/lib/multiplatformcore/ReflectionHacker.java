@@ -48,7 +48,7 @@ public class ReflectionHacker {
             .get();
     Object ownModule = classClass.getMethod("getModule").invoke(ReflectionHacker.class);
 
-    System.out.println("Own Module: " + moduleClass.getMethod("getName").invoke(ownModule));
+    System.out.println("Own Module: " + ownModule);
 
     moduleClass
         .getMethod("addOpens", String.class, moduleClass)
