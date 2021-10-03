@@ -7,7 +7,6 @@ import java.net.URLClassLoader;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import org.burningwave.core.assembler.StaticComponentContainer;
 
 /**
  * A custom {@link ClassLoader} implementation that allows adding {@link URL}s during runtime.
@@ -147,9 +146,8 @@ public class DependencyClassLoader extends URLClassLoader {
 
   private static Method getFindLoadedClassMethod() {
     try {
-      if (StaticComponentContainer.Modules != null) {
-        StaticComponentContainer.Modules.exportPackageToAllUnnamed("java.base", "java.lang");
-      }
+      // Magic, don't ask
+      ReflectionHacker.allowJreAccess();
 
       final Method method = ClassLoader.class.getDeclaredMethod("findLoadedClass", String.class);
       AccessController.doPrivileged(
@@ -160,7 +158,12 @@ public class DependencyClassLoader extends URLClassLoader {
               });
 
       return method;
-    } catch (NoSuchMethodException | SecurityException | PrivilegedActionException e) {
+    } catch (NoSuchMethodException
+        | SecurityException
+        | PrivilegedActionException
+        | InvocationTargetException
+        | IllegalAccessException
+        | ClassNotFoundException e) {
       // Can't continue
       throw new IllegalStateException("Exception while trying to prepare the ClassLoader", e);
     }
