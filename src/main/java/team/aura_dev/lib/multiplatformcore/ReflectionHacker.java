@@ -20,11 +20,17 @@ public class ReflectionHacker {
   public static void allowJreAccess()
       throws NoSuchMethodException, InvocationTargetException, IllegalAccessException,
           ClassNotFoundException, NoSuchElementException {
+    System.out.println("Method enter");
+
     Class<?> moduleLayerClass;
 
     try {
+      System.out.println("Loading classes...");
+
       moduleLayerClass = Class.forName("java.lang.ModuleLayer");
     } catch (ClassNotFoundException e) {
+      System.out.println("Loading classes FAILED!");
+
       // We're on an old JVM. We have nothing to do :D
       return;
     }
@@ -41,6 +47,8 @@ public class ReflectionHacker {
                     .invoke(moduleLayer, "java.base"))
             .get();
     Object ownModule = classClass.getMethod("getModule").invoke(ReflectionHacker.class);
+
+    System.out.println("Own Module: " + moduleClass.getMethod("getName").invoke(ownModule));
 
     moduleClass
         .getMethod("addOpens", String.class, moduleClass)
