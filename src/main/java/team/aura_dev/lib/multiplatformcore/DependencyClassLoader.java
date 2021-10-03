@@ -7,6 +7,7 @@ import java.net.URLClassLoader;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.NoSuchElementException;
 
 /**
  * A custom {@link ClassLoader} implementation that allows adding {@link URL}s during runtime.
@@ -163,7 +164,8 @@ public class DependencyClassLoader extends URLClassLoader {
         | PrivilegedActionException
         | InvocationTargetException
         | IllegalAccessException
-        | ClassNotFoundException e) {
+        | ClassNotFoundException
+        | NoSuchElementException e) {
       // Can't continue
       throw new IllegalStateException("Exception while trying to prepare the ClassLoader", e);
     }

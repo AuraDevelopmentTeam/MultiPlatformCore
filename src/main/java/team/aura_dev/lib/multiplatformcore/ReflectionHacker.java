@@ -1,24 +1,25 @@
 package team.aura_dev.lib.multiplatformcore;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class ReflectionHacker {
   // This is how the method would look in a barebones implementation
-  //  public static void allowJreAccess() {
-  //    ModuleLayer moduleLayer = ModuleLayer.boot();
+  // public static void allowJreAccess() {
+  //   ModuleLayer moduleLayer = ModuleLayer.boot();
   //
-  //    Module javaBaseModule = moduleLayer.findModule("java.base").get();
-  //    Module unnamedModule = ReflectionHacker.class.getClassLoader().getUnnamedModule();
+  //   Module javaBaseModule = moduleLayer.findModule("java.base").get();
+  //   Module unnamedModule = ReflectionHacker.class.getClassLoader().getUnnamedModule();
   //
-  //    javaBaseModule.addOpens("java.lang", unnamedModule);
-  //  }
+  //   javaBaseModule.addOpens("java.lang", unnamedModule);
+  // }
 
   public static void allowJreAccess()
       throws NoSuchMethodException, InvocationTargetException, IllegalAccessException,
-          ClassNotFoundException {
+          ClassNotFoundException, NoSuchElementException {
     Class<?> moduleLayerClass;
 
     try {
