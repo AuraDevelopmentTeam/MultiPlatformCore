@@ -12,9 +12,9 @@ public class ReflectionHacker {
   //   ModuleLayer moduleLayer = ModuleLayer.boot();
   //
   //   Module javaBaseModule = moduleLayer.findModule("java.base").get();
-  //   Module unnamedModule = ReflectionHacker.class.getClassLoader().getUnnamedModule();
+  //   Module ownModule = ReflectionHacker.class.getModule();
   //
-  //   javaBaseModule.addOpens("java.lang", unnamedModule);
+  //   javaBaseModule.addOpens("java.lang", ownModule);
   // }
 
   public static void allowJreAccess()
@@ -30,7 +30,7 @@ public class ReflectionHacker {
     }
 
     Class<?> moduleClass = Class.forName("java.lang.Module");
-    Class<?> classLoaderClass = Class.forName("java.lang.ClassLoader");
+    Class<?> classClass = Class.forName("java.lang.Class");
 
     Object moduleLayer = moduleLayerClass.getMethod("boot").invoke(null);
 
@@ -40,13 +40,10 @@ public class ReflectionHacker {
                     .getMethod("findModule", String.class)
                     .invoke(moduleLayer, "java.base"))
             .get();
-    Object unnamedModule =
-        classLoaderClass
-            .getMethod("getUnnamedModule")
-            .invoke(ReflectionHacker.class.getClassLoader());
+    Object ownModule = classClass.getMethod("getModule").invoke(ReflectionHacker.class);
 
     moduleClass
         .getMethod("addOpens", String.class, moduleClass)
-        .invoke(javaBaseModule, "java.lang", unnamedModule);
+        .invoke(javaBaseModule, "java.lang", ownModule);
   }
 }
