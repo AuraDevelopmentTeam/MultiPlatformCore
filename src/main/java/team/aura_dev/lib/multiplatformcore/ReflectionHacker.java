@@ -14,6 +14,7 @@ public class ReflectionHacker {
   //   Module javaBaseModule = moduleLayer.findModule("java.base").get();
   //   Module ownModule = ReflectionHacker.class.getModule();
   //
+  //   ownModule.addExports("java.lang", javaBaseModule);
   //   ownModule.addOpens("java.lang", javaBaseModule);
   // }
 
@@ -50,6 +51,9 @@ public class ReflectionHacker {
 
     System.out.println("Own Module: " + ownModule);
 
+    moduleClass
+        .getMethod("addExports", String.class, moduleClass)
+        .invoke(ownModule, "java.lang", javaBaseModule);
     moduleClass
         .getMethod("addOpens", String.class, moduleClass)
         .invoke(ownModule, "java.lang", javaBaseModule);
