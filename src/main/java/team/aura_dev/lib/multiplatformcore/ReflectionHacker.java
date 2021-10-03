@@ -14,7 +14,7 @@ public class ReflectionHacker {
   //   Module javaBaseModule = moduleLayer.findModule("java.base").get();
   //   Module ownModule = ReflectionHacker.class.getModule();
   //
-  //   javaBaseModule.addOpens("java.lang", ownModule);
+  //   ownModule.addOpens("java.lang", javaBaseModule);
   // }
 
   public static void allowJreAccess()
@@ -52,6 +52,6 @@ public class ReflectionHacker {
 
     moduleClass
         .getMethod("addOpens", String.class, moduleClass)
-        .invoke(javaBaseModule, "java.lang", ownModule);
+        .invoke(ownModule, "java.lang", javaBaseModule);
   }
 }
