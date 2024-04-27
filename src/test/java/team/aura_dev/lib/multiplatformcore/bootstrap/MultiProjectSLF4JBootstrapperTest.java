@@ -1,4 +1,4 @@
-package team.aura_dev.lib.multiplatformcore;
+package team.aura_dev.lib.multiplatformcore.bootstrap;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
@@ -13,8 +13,9 @@ import java.security.PrivilegedAction;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import team.aura_dev.lib.multiplatformcore.testcode.slf4j.TestBootstrapper;
-import team.aura_dev.lib.multiplatformcore.testcode.slf4j.TestPluginBootstrap;
+import team.aura_dev.lib.multiplatformcore.DependencyClassLoader;
+import team.aura_dev.lib.multiplatformcore.testcode.slf4j.bootstrap.TestBootstrapper;
+import team.aura_dev.lib.multiplatformcore.testcode.slf4j.bootstrap.TestPluginBootstrap;
 
 public class MultiProjectSLF4JBootstrapperTest {
   private static final String SLF4J_VERSION = "1.7.25";
@@ -36,16 +37,11 @@ public class MultiProjectSLF4JBootstrapperTest {
                     () -> new DependencyClassLoader("@group@"))) {};
 
     assertEquals(
-        base.getDependencyClassLoader().packageName,
-        generator.getDependencyClassLoader().packageName);
+        base.getDependencyClassLoader().excludedPackageNames,
+        generator.getDependencyClassLoader().excludedPackageNames);
     assertEquals(
-        base.getDependencyClassLoader().apiPackageName,
-        generator.getDependencyClassLoader().apiPackageName);
-    assertEquals(
-        base.getDependencyClassLoader().packageName, direct.getDependencyClassLoader().packageName);
-    assertEquals(
-        base.getDependencyClassLoader().apiPackageName,
-        direct.getDependencyClassLoader().apiPackageName);
+        base.getDependencyClassLoader().excludedPackageNames,
+        direct.getDependencyClassLoader().excludedPackageNames);
   }
 
   @Test

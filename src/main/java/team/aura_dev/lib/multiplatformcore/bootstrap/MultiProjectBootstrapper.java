@@ -1,4 +1,4 @@
-package team.aura_dev.lib.multiplatformcore;
+package team.aura_dev.lib.multiplatformcore.bootstrap;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -6,6 +6,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Arrays;
 import lombok.Getter;
+import team.aura_dev.lib.multiplatformcore.DependencyClassLoader;
 
 /**
  * This class is more or less the entry point into the {@link ClassLoader} magic. Creating the
@@ -27,7 +28,7 @@ public abstract class MultiProjectBootstrapper<T> {
 
   /**
    * Constructs a {@link MultiProjectBootstrapper} and initializes the {@link DependencyClassLoader}
-   * with the values from {@link #getPackageName()} and {@link #getApiPackageName()}.
+   * with the values from {@link #getPackageName()} and {@link #getExcludedPackages()}.
    *
    * @param pluginBaseClass The plugin base class. After the plugin instance has been created is
    *     checked if it can be cast to this class.
@@ -37,7 +38,7 @@ public abstract class MultiProjectBootstrapper<T> {
     this.dependencyClassLoader =
         AccessController.doPrivileged(
             (PrivilegedAction<DependencyClassLoader>)
-                () -> new DependencyClassLoader(getPackageName(), getApiPackageName()));
+                () -> new DependencyClassLoader(getExcludedPackages()));
   }
 
   /**
@@ -80,23 +81,25 @@ public abstract class MultiProjectBootstrapper<T> {
    *     Else it is a good idea to do so!
    */
   protected String getPackageName() {
-    return getClass().getPackage().getName();
+    return removeEnd(getClass().getPackage().getName(), ".bootstrap");
   }
 
   /**
-   * Return the package name of the API package. This is passed to the {@link DependencyClassLoader}
-   * if you call {@link #MultiProjectBootstrapper(Class)}. If you call any of the other two
-   * constructors this method is ignored.
+   * Return the names of the packages that should not be loaded by our {@link
+   * DependencyClassLoader}. This is passed to the {@link DependencyClassLoader} if you call {@link
+   * #MultiProjectBootstrapper(Class)}. If you call any of the other two constructors this method is
+   * ignored.
    *
-   * @return the package name of this class with {@code .api} appended.<br>
+   * @return the package names of this class with {@code .api} or {@code .bootstrap} appended
+   *     respectively.<br>
    *     <i>Note:</i> {@code this.getClass()}, not {@code MultiProjectBootstrapper.class}. So if
    *     your API package is called {@code api} and sits in the same package as {@link
    *     #getPackageName()} returns, you don't need to override this method. Else it is a good idea
    *     to do so!
    * @see #getPackageName()
    */
-  protected String getApiPackageName() {
-    return getPackageName() + ".api";
+  protected String[] getExcludedPackages() {
+    return new String[] {getPackageName() + ".api", getPackageName() + ".bootstrap"};
   }
 
   /**
@@ -161,5 +164,11 @@ public abstract class MultiProjectBootstrapper<T> {
       // Catch all checked and unchecked exceptions
       throw new IllegalStateException("Loading the plugin class failed", e);
     }
+  }
+
+  private static String removeEnd(String str, String end) {
+    if (!str.endsWith(end)) return str;
+
+    return str.substring(0, str.length() - end.length());
   }
 }

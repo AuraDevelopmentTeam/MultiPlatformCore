@@ -1,4 +1,4 @@
-package team.aura_dev.lib.multiplatformcore;
+package team.aura_dev.lib.multiplatformcore.bootstrap;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.PrivilegedAction;
+import team.aura_dev.lib.multiplatformcore.DependencyClassLoader;
 
 /**
  * This class is more or less the entry point into the {@link ClassLoader} magic. Creating the
@@ -26,7 +27,7 @@ public abstract class MultiProjectSLF4JBootstrapper<T> extends MultiProjectBoots
   /**
    * Constructs a {@link MultiProjectSLF4JBootstrapper} and initializes the {@link
    * DependencyClassLoader} with the values from {@link #getPackageName()} and {@link
-   * #getApiPackageName()}.
+   * #getExcludedPackages()}.
    *
    * @param pluginBaseClass The plugin base class. After the plugin instance has been created is
    *     checked if it can be cast to this class.

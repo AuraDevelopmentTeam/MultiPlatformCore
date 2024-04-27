@@ -1,7 +1,8 @@
-package team.aura_dev.lib.multiplatformcore.testcode.slf4j;
+package team.aura_dev.lib.multiplatformcore.testcode.slf4j.bootstrap;
 
 import java.nio.file.Path;
 import lombok.Getter;
+import team.aura_dev.lib.multiplatformcore.testcode.slf4j.TestPluginApi;
 
 public class TestPluginBootstrap {
   @Getter private final TestBootstrapper bootstrapper;

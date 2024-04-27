@@ -1,4 +1,4 @@
-package team.aura_dev.lib.multiplatformcore.testcode.simple;
+package team.aura_dev.lib.multiplatformcore.testcode.simple.bootstrap;
 
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicBoolean;

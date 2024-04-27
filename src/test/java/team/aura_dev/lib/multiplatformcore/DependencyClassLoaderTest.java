@@ -17,7 +17,9 @@ public class DependencyClassLoaderTest {
             (PrivilegedAction<DependencyClassLoader>)
                 () -> new DependencyClassLoader(getClass().getClassLoader(), "@group@"));
 
-    assertEquals("@group@.api.", one.apiPackageName);
-    assertEquals("@group@.api.", two.apiPackageName);
+    assertEquals("@group@.api.", one.excludedPackageNames.get(0));
+    assertEquals("@group@.bootstrap.", one.excludedPackageNames.get(1));
+    assertEquals("@group@.api.", two.excludedPackageNames.get(0));
+    assertEquals("@group@.bootstrap.", two.excludedPackageNames.get(1));
   }
 }

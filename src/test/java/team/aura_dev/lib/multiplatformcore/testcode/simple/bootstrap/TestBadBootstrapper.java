@@ -1,6 +1,6 @@
-package team.aura_dev.lib.multiplatformcore.testcode.simple;
+package team.aura_dev.lib.multiplatformcore.testcode.simple.bootstrap;
 
-import team.aura_dev.lib.multiplatformcore.MultiProjectBootstrapper;
+import team.aura_dev.lib.multiplatformcore.bootstrap.MultiProjectBootstrapper;
 
 public class TestBadBootstrapper extends MultiProjectBootstrapper<String> {
   public TestBadBootstrapper() {

@@ -9,6 +9,7 @@ import team.aura_dev.lib.multiplatformcore.download.DependencyDownloader;
 import team.aura_dev.lib.multiplatformcore.download.TestRuntimeDependencies;
 import team.aura_dev.lib.multiplatformcore.testcode.simple.api.InstanceHolder;
 import team.aura_dev.lib.multiplatformcore.testcode.simple.api.TestPluginApi;
+import team.aura_dev.lib.multiplatformcore.testcode.simple.bootstrap.TestPluginBootstrap;
 import team.aura_dev.lib.multiplatformcore.testcode.simple.example.ConfigurateTest;
 import team.aura_dev.lib.multiplatformcore.testcode.simple.example.ExampleUtility;
 

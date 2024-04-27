@@ -1,4 +1,4 @@
-package team.aura_dev.lib.multiplatformcore;
+package team.aura_dev.lib.multiplatformcore.bootstrap;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
@@ -12,9 +12,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import team.aura_dev.lib.multiplatformcore.testcode.simple.TestBadBootstrapper;
-import team.aura_dev.lib.multiplatformcore.testcode.simple.TestBootstrapper;
-import team.aura_dev.lib.multiplatformcore.testcode.simple.TestPluginBootstrap;
+import team.aura_dev.lib.multiplatformcore.DependencyClassLoader;
+import team.aura_dev.lib.multiplatformcore.testcode.simple.bootstrap.TestBadBootstrapper;
+import team.aura_dev.lib.multiplatformcore.testcode.simple.bootstrap.TestBootstrapper;
+import team.aura_dev.lib.multiplatformcore.testcode.simple.bootstrap.TestPluginBootstrap;
 
 public class MultiProjectBootstrapperTest {
   @Rule public TemporaryFolder folder = new TemporaryFolder();
@@ -34,16 +35,11 @@ public class MultiProjectBootstrapperTest {
                     () -> new DependencyClassLoader("@group@"))) {};
 
     assertEquals(
-        base.getDependencyClassLoader().packageName,
-        generator.getDependencyClassLoader().packageName);
+        base.getDependencyClassLoader().excludedPackageNames,
+        generator.getDependencyClassLoader().excludedPackageNames);
     assertEquals(
-        base.getDependencyClassLoader().apiPackageName,
-        generator.getDependencyClassLoader().apiPackageName);
-    assertEquals(
-        base.getDependencyClassLoader().packageName, direct.getDependencyClassLoader().packageName);
-    assertEquals(
-        base.getDependencyClassLoader().apiPackageName,
-        direct.getDependencyClassLoader().apiPackageName);
+        base.getDependencyClassLoader().excludedPackageNames,
+        direct.getDependencyClassLoader().excludedPackageNames);
   }
 
   @Test
