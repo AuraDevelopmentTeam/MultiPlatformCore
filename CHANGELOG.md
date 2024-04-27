@@ -1,3 +1,13 @@
+Version 1.3.1
+-------------
+
+\* Fixed building.  
+
+Version 1.3.0
+-------------
+
+\* Changed the class loading mechanism to one that doesn't require reflection.  
+
 Version 1.2.3
 -------------
 
