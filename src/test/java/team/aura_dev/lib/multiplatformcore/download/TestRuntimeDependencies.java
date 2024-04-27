@@ -10,10 +10,9 @@ public class TestRuntimeDependencies {
       RuntimeDependency.builder(
               "org.spongepowered",
               "configurate-hocon",
-              "3.6.1",
-              "6395403afce7b9bbf4e26ef74c13da9a",
-              "e3f199dbd91de753a70f63606f530fdb8644bbd5")
-          .maven(RuntimeDependency.Maven.SPONGE)
+              "3.7.3",
+              "c5679b4202b226fbe07f84dfb300a8d0",
+              "630e0562bd9b809428b55742aabe382f0347211f")
           .transitive()
           .exclusion("com.google.code.findbugs:jsr305")
           .exclusion("com.google.errorprone:error_prone_annotations")

@@ -38,10 +38,10 @@ public class DependencyDownloaderTest {
         Collections.singleton(TestRuntimeDependencies.CONFIGURATE_HOCON));
 
     assertIsFile(
-        libsDir.resolve("org/spongepowered/configurate-hocon/3.6.1/configurate-hocon-3.6.1.jar"));
+        libsDir.resolve("org/spongepowered/configurate-hocon/3.7.3/configurate-hocon-3.7.3.jar"));
     assertIsFile(
-        libsDir.resolve("org/spongepowered/configurate-core/3.6.1/configurate-core-3.6.1.jar"));
-    assertIsFile(libsDir.resolve("com/typesafe/config/1.3.1/config-1.3.1.jar"));
+        libsDir.resolve("org/spongepowered/configurate-core/3.7.3/configurate-core-3.7.3.jar"));
+    assertIsFile(libsDir.resolve("com/typesafe/config/1.4.0/config-1.4.0.jar"));
 
     assertCanLoadClass("ninja.leaping.configurate.ConfigurationNode");
     assertCanLoadClass("com.typesafe.config.Config");
@@ -61,10 +61,10 @@ public class DependencyDownloaderTest {
     dependencyDownloader.downloadAndInjectInClasspath(list);
 
     assertIsFile(
-        libsDir.resolve("org/spongepowered/configurate-hocon/3.6.1/configurate-hocon-3.6.1.jar"));
+        libsDir.resolve("org/spongepowered/configurate-hocon/3.7.3/configurate-hocon-3.7.3.jar"));
     assertIsFile(
-        libsDir.resolve("org/spongepowered/configurate-core/3.6.1/configurate-core-3.6.1.jar"));
-    assertIsFile(libsDir.resolve("com/typesafe/config/1.3.1/config-1.3.1.jar"));
+        libsDir.resolve("org/spongepowered/configurate-core/3.7.3/configurate-core-3.7.3.jar"));
+    assertIsFile(libsDir.resolve("com/typesafe/config/1.4.0/config-1.4.0.jar"));
 
     assertCanLoadClass("ninja.leaping.configurate.ConfigurationNode");
     assertCanLoadClass("com.typesafe.config.Config");

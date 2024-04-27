@@ -18,7 +18,7 @@ dependencies {
 
     // Test files
     testRuntimeOnly "org.slf4j:slf4j-nop:${slf4j_version}"
-    testCompileOnly "org.spongepowered:configurate-hocon:3.6.1"
+    testCompileOnly "org.spongepowered:configurate-hocon:3.7.3"
 }
 
 processSources {
